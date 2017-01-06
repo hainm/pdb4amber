@@ -5,6 +5,30 @@ import parmed
 
 __version__ = '1.3'
 
+
+def assign_his(parm):
+    ''' Assign correct name for Histidine based on the atom name
+
+    Parameters
+    ----------
+    parm : parmed.Structure (or derived)
+    '''
+    amber_his_names = set('HID', 'HIE' 'HIP')
+    possible_names = set('HIS') + amber_his_names
+
+    for residue in parm.residues:
+        if residue.name in possible_names:
+            atom_name_set = set(atom.name for atom in residue.atoms)
+            if 'HD1' in atom_name_set and 'HE2' in atom_name_set:
+                residue.name = 'HIP'
+            elif 'HD1' in atom_name_set and 'HE2' not in atom_name_set:
+                residue.name = 'HID'
+            elif 'HD1' not in atom_name_set and 'HE2' in atom_name_set:
+                residue.name = 'HIE'
+            else:
+                residue.name = 'HIE'
+
+
 def run(arg_pdbout, arg_pdbin,
         arg_nohyd=False,
         arg_dry=False,
@@ -17,100 +41,99 @@ def run(arg_pdbout, arg_pdbin,
         arg_model=0,
         arg_elbow=False
         ):
-  stderr = sys.stderr
-  if log is not None:
-    sys.stderr = writer(log)
-  filename, extension = os.path.splitext(arg_pdbout)
-  pdbin = arg_pdbin
+    stderr = sys.stderr
+    if log is not None:
+        sys.stderr = writer(log)
+    filename, extension = os.path.splitext(arg_pdbout)
+    pdbin = arg_pdbin
 
-  # optionally run reduce on input file
-  if arg_reduce:
-    if arg_pdbin == 'stdin':
-      pdbfile = sys.stdin
+    # optionally run reduce on input file
+    if arg_reduce:
+        if arg_pdbin == 'stdin':
+            pdbfile = sys.stdin
+        else:
+            pdbfile = open(arg_pdbin, 'r')
+        try:
+            reduce = os.path.join(os.getenv('AMBERHOME')
+                                  or '', 'bin', 'reduce')
+            if not os.path.exists(reduce):
+                reduce = 'reduce'
+            process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-'], stdin=pdbfile,
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = process.communicate()
+            out = out.decode()
+            err = err.decode()
+            if process.wait():
+                print >> sys.stderr, ("REDUCE returned non-zero exit status: "
+                                      "See reduce_info.log for more details")
+                open('reduce_info.log', 'w').write(err)
+            # print out the reduce log even if it worked
+            else:
+                open('reduce_info.log', 'w').write(err)
+            pdbh = StringIO(out)
+            parm = parmed.load_file(pdbh, arg_noter, arg_model)
+        finally:
+            if pdbfile is not sys.stdin:
+                pdbfile.close()
     else:
-      pdbfile = open(arg_pdbin, 'r')
-    try:
-      reduce = os.path.join(os.getenv('AMBERHOME') or '', 'bin', 'reduce')
-      if not os.path.exists(reduce):
-        reduce = 'reduce'
-      process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-'], stdin=pdbfile,
-                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-      out, err = process.communicate()
-      out = out.decode()
-      err = err.decode()
-      if process.wait():
-        print >> sys.stderr, ("REDUCE returned non-zero exit status: "
-                              "See reduce_info.log for more details")
-        open('reduce_info.log', 'w').write(err)
-      # print out the reduce log even if it worked
-      else:
-        open('reduce_info.log', 'w').write(err)
-      pdbh = StringIO(out)
-      parm = parmed.load_file(pdbh, arg_noter, arg_model)
-    finally:
-      if pdbfile is not sys.stdin:
-        pdbfile.close()
-  else:
-    parm = parmed.load_file(pdbin, arg_noter, arg_model)
+        parm = parmed.load_file(pdbin, arg_noter, arg_model)
 
-  # remove alternate locations and keep only the first one:=============
-  if arg_mostpop:
-     # update me
-    # TODO
-     pass
+    # remove alternate locations and keep only the first one:=============
+    if arg_mostpop:
+        # update me
+        # TODO
+        pass
 
-  # remove hydrogens if option -y is used:==============================
-  if arg_nohyd:
-    # parm.strip(...)
-    # TODO
-    pass
+    # remove hydrogens if option -y is used:==============================
+    if arg_nohyd:
+        # parm.strip(...)
+        # TODO
+        pass
 
-  # find non-standard Amber residues:===================================
-  #   TODO: why does the following call discard the return array of
-  #         non-standard residue names?
-  non_standard(parm, filename)
-  ns_names = []
-  if arg_elbow:
-    ns_names = non_standard_elbow(parm)
+    # find non-standard Amber residues:===================================
+    #   TODO: why does the following call discard the return array of
+    #         non-standard residue names?
+    non_standard(parm, filename)
+    ns_names = []
+    if arg_elbow:
+        ns_names = non_standard_elbow(parm)
 
-  # keep only protein:==================================================
-  if arg_prot:
-    parm = prot_only(parm)
+    # keep only protein:==================================================
+    if arg_prot:
+        parm = prot_only(parm)
 
-  # remove water if -d option used:=====================================
-  if arg_dry:
-    # parm = remove_water(parm, filename)
-    # water_mask = ':' + ','.join(...)
-    # parm.strip(water_mask)
-    pass
+    # remove water if -d option used:=====================================
+    if arg_dry:
+        # parm = remove_water(parm, filename)
+        # water_mask = ':' + ','.join(...)
+        # parm.strip(water_mask)
+        pass
 
-  #=====================================================================
-  # after this call, residue numbers refer to the ***new*** PDB file
-  #=====================================================================
+    #=====================================================================
+    # after this call, residue numbers refer to the ***new*** PDB file
+    #=====================================================================
 
-  # find histidines that might have to be changed:=====================
-  if arg_constph:
-    parm = constph(parm)
-  else:
-    parm = find_his(parm)
+    # find histidines that might have to be changed:=====================
+    if arg_constph:
+        parm = constph(parm)
+    else:
+        parm = find_his(parm)
 
-  # find possible S-S in the final protein:=============================
-  parm, cnct, sslist = find_disulfide(parm, filename)
+    # find possible S-S in the final protein:=============================
+    parm, cnct, sslist = find_disulfide(parm, filename)
 
-  # find possible gaps:==================================================
-  gaplist = find_gaps(parm)
+    # find possible gaps:==================================================
+    gaplist = find_gaps(parm)
 
-  # count heavy atoms:==================================================
-  find_incomplete(parm)
+    # count heavy atoms:==================================================
+    find_incomplete(parm)
 
-  # =====================================================================
-  # make final output to new PDB file
-  # =====================================================================
-  # pdb_write(parm, arg_pdbout, cnct)
-  pdb_write(parm, arg_pdbout)  # disables printing of CONECT records
-  print >> sys.stderr, ""
-  sys.stderr = stderr
-  return ns_names, gaplist, sslist
+    # =====================================================================
+    # make final output to new PDB file
+    # =====================================================================
+    parm.write_pdb(arg_pdbout)
+    return ns_names, gaplist, sslist
+
 
 def main():
     parser = OptionParser(version=__version__)
