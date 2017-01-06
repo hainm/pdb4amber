@@ -1,0 +1,35 @@
+language: cpp
+
+matrix:
+  include:
+     - { os: linux, env: PYTHON_VERSION=2.7 }
+     - { os: linux, env: PYTHON_VERSION=3.5 }
+
+sudo: true
+dist: trusty
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-5
+    - g++-5
+    - clang-3.6
+    - unzip
+
+before_install:
+    - source devtools/ci/set_env.sh
+
+install:
+    - pip install . -v
+
+script:
+    - source devtools/ci/run_tests.sh
+
+after_success:
+    - echo "Congrats"
+    - (cd tests && ../devtools/ci/coveralls)
+
+notifications:
+  email: false
