@@ -17,8 +17,8 @@ conda create -y -n myenv python=$PYTHON_VERSION
 
 # switch env
 source activate myenv
-conda install coverage
-conda install parmed -c ambermd
+conda install coverage -y 
+conda install parmed -c ambermd -y
 
 # pytest
 pip install pytest
