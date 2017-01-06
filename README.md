@@ -9,3 +9,7 @@ Usage
 ```bash
 pdb4amber --help
 ```
+
+Test
+----
+py.test -vs .

@@ -13,8 +13,8 @@ def assign_his(parm):
     ----------
     parm : parmed.Structure (or derived)
     '''
-    amber_his_names = set('HID', 'HIE' 'HIP')
-    possible_names = set('HIS') + amber_his_names
+    amber_his_names = set(['HID', 'HIE' 'HIP'])
+    possible_names = set(['HIS',]) ^ amber_his_names
 
     for residue in parm.residues:
         if residue.name in possible_names:
