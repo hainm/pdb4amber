@@ -1,5 +1,6 @@
 import os
 import sys
+from itertools import chain
 from optparse import OptionParser
 import parmed
 
@@ -41,8 +42,35 @@ def constph(parm):
   return parm
 
 def find_disulfide(parm):
-    pass
+    """ return set of cys-cys pairs
+    Also rename CYS to CYX of having S-S bond.
 
+    Parameters
+    ----------
+    parm : parmed.Structure (or derived class)
+    """
+    residues = [res for res in parm.residues if 'CYS' in res.name]
+    
+    cys_cys_set = set()
+    for residue in residues:
+        for atom in residue.atoms:
+            if 'SG' in atom.name:
+                cys_cys_set.add((atom.bonds[0].atom1.residue.idx,
+                                 atom.bonds[0].atom2.residue.idx))
+    return cys_cys_set
+
+def rename_cys_to_cyx(parm, cys_cys_set):
+    """ Rename CYS to CYX of having S-S bond.
+
+    Parameters
+    ----------
+    parm : parmed.Structure (or derived class)
+    cys_cys_set : Set[List[int, int]]
+    """
+    for index in chain.from_iterable(cys_cys_set):
+        residue = parm.residues[index]
+        residue.name = 'CYX'
+        
 def run(arg_pdbout, arg_pdbin,
         arg_nohyd=False,
         arg_dry=False,
