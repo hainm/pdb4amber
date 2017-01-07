@@ -4,6 +4,9 @@ from itertools import chain
 from optparse import OptionParser
 import parmed
 
+# TODO: include in ParmEd?
+from .residue import AMBER_SUPPORTED_RESNAMES
+
 __version__ = '1.3'
 
 
@@ -13,6 +16,10 @@ def assign_his(parm):
     Parameters
     ----------
     parm : parmed.Structure (or derived)
+
+    Returns
+    -------
+    parm : updated `parm`
     '''
     amber_his_names = set(['HID', 'HIE' 'HIP'])
     possible_names = set(['HIS', ]) | amber_his_names
@@ -28,9 +35,20 @@ def assign_his(parm):
                 residue.name = 'HIE'
             else:
                 residue.name = 'HIE'
+    return parm
 
 
 def constph(parm):
+    """ Update AS4, GL4, HIP for constph.
+
+    Parameters
+    ----------
+    parm : parmed.Structure or derived class
+
+    Returns
+    -------
+    parm : updated `parm`
+    """
     for residue in parm.residues:
         if residue.name == 'ASP':
             residue.name = 'AS4'
@@ -62,8 +80,7 @@ def find_disulfide(parm):
             if 'SG' in atom.name:
                 cys_cys_set.add((atom.bonds[0].atom1.residue.idx,
                                  atom.bonds[0].atom2.residue.idx))
-    return cys_cys_set
-
+    return sorted(cys_cys_set)
 
 def rename_cys_to_cyx(parm, cys_cys_set):
     """ Rename CYS to CYX of having S-S bond.
@@ -76,6 +93,16 @@ def rename_cys_to_cyx(parm, cys_cys_set):
     for index in chain.from_iterable(cys_cys_set):
         residue = parm.residues[index]
         residue.name = 'CYX'
+
+def find_non_starndard_resnames(parm):
+    return set([res.name for res in parm.residues
+                if res.name.strip() not in AMBER_SUPPORTED_RESNAMES])
+
+def find_gaps(parm):
+    return []
+
+def find_incomplete(parm):
+    return []
 
 
 def run(arg_pdbout, arg_pdbin,
@@ -120,32 +147,24 @@ def run(arg_pdbout, arg_pdbin,
             else:
                 open('reduce_info.log', 'w').write(err)
             pdbh = StringIO(out)
-            parm = parmed.load_file(pdbh, arg_noter, arg_model)
+            parm = parmed.load_file(pdbh)
         finally:
             if pdbfile is not sys.stdin:
                 pdbfile.close()
     else:
-        parm = parmed.load_file(pdbin, arg_noter, arg_model)
-
-    # remove alternate locations and keep only the first one:=============
-    if arg_mostpop:
-        # update me
-        # TODO
-        pass
+        parm = parmed.load_file(pdbin)
 
     # remove hydrogens if option -y is used:==============================
     if arg_nohyd:
-        # parm.strip(...)
-        # TODO
-        pass
+        parm.strip('@H=')
 
     # find non-standard Amber residues:===================================
     #   TODO: why does the following call discard the return array of
     #         non-standard residue names?
-    non_standard(parm, filename)
-    ns_names = []
-    if arg_elbow:
-        ns_names = non_standard_elbow(parm)
+    ns_names = find_non_starndard_resnames(parm)
+    # ns_names = []
+    # if arg_elbow:
+    #     ns_names = find_non_starndard_resnames_elbow(parm)
 
     # keep only protein:==================================================
     if arg_prot:
@@ -153,10 +172,8 @@ def run(arg_pdbout, arg_pdbin,
 
     # remove water if -d option used:=====================================
     if arg_dry:
-        # parm = remove_water(parm, filename)
-        # water_mask = ':' + ','.join(...)
-        # parm.strip(water_mask)
-        pass
+        water_mask = ':' + ','.join(pmd.residue.WATER_NAMES)
+        parm.strip(water_mask)
 
     #=====================================================================
     # after this call, residue numbers refer to the ***new*** PDB file
@@ -164,12 +181,13 @@ def run(arg_pdbout, arg_pdbin,
 
     # find histidines that might have to be changed:=====================
     if arg_constph:
-        parm = constph(parm)
+        constph(parm)
     else:
-        parm = find_his(parm)
+        assign_his(parm)
 
     # find possible S-S in the final protein:=============================
-    parm, cnct, sslist = find_disulfide(parm, filename)
+    sslist = find_disulfide(parm)
+    rename_cys_to_cyx(parm, sslist)
 
     # find possible gaps:==================================================
     gaplist = find_gaps(parm)
@@ -180,7 +198,7 @@ def run(arg_pdbout, arg_pdbin,
     # =====================================================================
     # make final output to new PDB file
     # =====================================================================
-    parm.write_pdb(arg_pdbout)
+    parm.write_pdb(arg_pdbout, coordinates=parm.get_coordinates()[arg_model])
     return ns_names, gaplist, sslist
 
 

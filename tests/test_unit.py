@@ -27,3 +27,17 @@ def test_find_disulfide():
     parm = pmd.load_file(fn)
     cys_cys_set = pdb4amber.find_disulfide(parm)
     assert sorted(cys_cys_set) == [(5, 126), (29, 114), (63, 79), (75, 93)]
+
+def test_strip_water():
+    fn = get_fn('4lzt/4lzt_h.pdb')
+    parm = pmd.load_file(fn)
+    assert 'HOH' in set(res.name for res in parm.residues)
+
+    water_mask = ':' + ','.join(pmd.residue.WATER_NAMES)
+    parm.strip(water_mask)
+    assert 'HOH' not in set(res.name for res in parm.residues)
+
+def test_find_non_starndard_resnames():
+    fn = get_fn('4lzt/4lzt_h.pdb')
+    parm = pmd.load_file(fn)
+    assert pdb4amber.find_non_starndard_resnames(parm) == {'NO3'}
