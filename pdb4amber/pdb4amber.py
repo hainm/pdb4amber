@@ -199,9 +199,9 @@ def run(arg_pdbout, arg_pdbin,
     # =====================================================================
     # make final output to new PDB file
     # =====================================================================
-    coordinates = parm.get_coordinates()[arg_model]
+    parm.coordinates = parm.get_coordinates()[arg_model]
     parm.save(arg_pdbout,
-              coordinates=coordinates)
+              overwrite=True)
     return ns_names, gaplist, sslist
 
 
