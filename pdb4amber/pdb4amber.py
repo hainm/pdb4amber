@@ -15,7 +15,7 @@ def assign_his(parm):
     parm : parmed.Structure (or derived)
     '''
     amber_his_names = set(['HID', 'HIE' 'HIP'])
-    possible_names = set(['HIS',]) | amber_his_names
+    possible_names = set(['HIS', ]) | amber_his_names
 
     for residue in parm.residues:
         if residue.name in possible_names:
@@ -29,17 +29,19 @@ def assign_his(parm):
             else:
                 residue.name = 'HIE'
 
+
 def constph(parm):
-  for residue in parm.residues:
-    if residue.name == 'ASP':
-      residue.name = 'AS4'
-    elif residue.name == 'GLU':
-      residue.name = 'GL4'
-    elif residue.name == 'HIS':
-      residue.name = 'HIP'
-    else:
-        pass
-  return parm
+    for residue in parm.residues:
+        if residue.name == 'ASP':
+            residue.name = 'AS4'
+        elif residue.name == 'GLU':
+            residue.name = 'GL4'
+        elif residue.name == 'HIS':
+            residue.name = 'HIP'
+        else:
+            pass
+    return parm
+
 
 def find_disulfide(parm):
     """ return set of cys-cys pairs
@@ -53,7 +55,7 @@ def find_disulfide(parm):
     cys_cys_set : Set[List[int, int]]
     """
     residues = [res for res in parm.residues if 'CYS' in res.name]
-    
+
     cys_cys_set = set()
     for residue in residues:
         for atom in residue.atoms:
@@ -61,6 +63,7 @@ def find_disulfide(parm):
                 cys_cys_set.add((atom.bonds[0].atom1.residue.idx,
                                  atom.bonds[0].atom2.residue.idx))
     return cys_cys_set
+
 
 def rename_cys_to_cyx(parm, cys_cys_set):
     """ Rename CYS to CYX of having S-S bond.
@@ -73,7 +76,8 @@ def rename_cys_to_cyx(parm, cys_cys_set):
     for index in chain.from_iterable(cys_cys_set):
         residue = parm.residues[index]
         residue.name = 'CYX'
-        
+
+
 def run(arg_pdbout, arg_pdbin,
         arg_nohyd=False,
         arg_dry=False,
