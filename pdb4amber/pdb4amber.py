@@ -43,11 +43,14 @@ def constph(parm):
 
 def find_disulfide(parm):
     """ return set of cys-cys pairs
-    Also rename CYS to CYX of having S-S bond.
 
     Parameters
     ----------
     parm : parmed.Structure (or derived class)
+
+    Returns
+    -------
+    cys_cys_set : Set[List[int, int]]
     """
     residues = [res for res in parm.residues if 'CYS' in res.name]
     
