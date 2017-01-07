@@ -40,6 +40,15 @@ def constph(parm):
         pass
   return parm
 
+def find_disulfide(parm):
+    n_cys = 0
+    ss_atoms = [] # list of Atom
+    for residue in parm.residues:
+        for atom in residue.atoms:
+             if 'SG' in atom.name and ('CYS' in residue.name or 'CYX' in residue.name):
+                 n_cys += 1
+                 ss_atoms.append(atom)
+
 
 def run(arg_pdbout, arg_pdbin,
         arg_nohyd=False,
