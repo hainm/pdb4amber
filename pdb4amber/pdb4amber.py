@@ -132,7 +132,7 @@ def run(arg_pdbout, arg_pdbin,
         else:
             pdbfile = open(arg_pdbin, 'r')
         try:
-            reduce = os.path.join(os.getenv('AMBERHOME', '')
+            reduce = os.path.join(os.getenv('AMBERHOME', ''),
                                   'bin', 'reduce')
             if not os.path.exists(reduce):
                 reduce = 'reduce'
