@@ -16,6 +16,7 @@ conda create -y -n myenv python=$PYTHON_VERSION
 
 # switch env
 source activate myenv
+conda install numpy nomkl -y
 conda install coverage -y 
 conda install parmed -c ambermd -y
 
