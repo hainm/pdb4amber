@@ -14,7 +14,7 @@ def assign_his(parm):
     parm : parmed.Structure (or derived)
     '''
     amber_his_names = set(['HID', 'HIE' 'HIP'])
-    possible_names = set(['HIS',]) ^ amber_his_names
+    possible_names = set(['HIS',]) | amber_his_names
 
     for residue in parm.residues:
         if residue.name in possible_names:
@@ -41,14 +41,7 @@ def constph(parm):
   return parm
 
 def find_disulfide(parm):
-    n_cys = 0
-    ss_atoms = [] # list of Atom
-    for residue in parm.residues:
-        for atom in residue.atoms:
-             if 'SG' in atom.name and ('CYS' in residue.name or 'CYX' in residue.name):
-                 n_cys += 1
-                 ss_atoms.append(atom)
-
+    pass
 
 def run(arg_pdbout, arg_pdbin,
         arg_nohyd=False,
