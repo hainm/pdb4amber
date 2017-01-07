@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/hainm/pdb4amber.svg?branch=master)](https://travis-ci.org/hainm/pdb4amber)
+
 Install
 -------
 ```bash
