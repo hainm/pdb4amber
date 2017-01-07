@@ -5,7 +5,9 @@ from optparse import OptionParser
 import parmed
 
 # TODO: include in ParmEd?
-from .residue import AMBER_SUPPORTED_RESNAMES
+from .residue import (RESPROT, RESNA, RESSOLV, 
+    RESSUGAR, AMBER_SUPPORTED_RESNAMES
+)
 
 __version__ = '1.3'
 
@@ -162,22 +164,21 @@ def run(arg_pdbout, arg_pdbin,
     #   TODO: why does the following call discard the return array of
     #         non-standard residue names?
     ns_names = find_non_starndard_resnames(parm)
+
+    # write to pdb ifor non-starnd residues
+    parm[':' + ','.join(ns_names)].save('non_prot.pdb', overwrite=True)
     # ns_names = []
     # if arg_elbow:
     #     ns_names = find_non_starndard_resnames_elbow(parm)
 
     # keep only protein:==================================================
     if arg_prot:
-        parm = prot_only(parm)
+        parm.strip('!:' + ','.join(RESPROT))
 
     # remove water if -d option used:=====================================
     if arg_dry:
         water_mask = ':' + ','.join(pmd.residue.WATER_NAMES)
         parm.strip(water_mask)
-
-    #=====================================================================
-    # after this call, residue numbers refer to the ***new*** PDB file
-    #=====================================================================
 
     # find histidines that might have to be changed:=====================
     if arg_constph:
@@ -198,7 +199,9 @@ def run(arg_pdbout, arg_pdbin,
     # =====================================================================
     # make final output to new PDB file
     # =====================================================================
-    parm.write_pdb(arg_pdbout, coordinates=parm.get_coordinates()[arg_model])
+    coordinates = parm.get_coordinates()[arg_model]
+    parm.write_pdb(arg_pdbout,
+                   coordinates=coordinates)
     return ns_names, gaplist, sslist
 
 
