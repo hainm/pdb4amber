@@ -28,6 +28,18 @@ def assign_his(parm):
             else:
                 residue.name = 'HIE'
 
+def constph(parm):
+  for residue in parm.residuues:
+    if residue.name == 'ASP':
+      residue.name = 'AS4'
+    elif residue.name == 'GLU':
+      residue.name = 'GL4'
+    elif residue.name == 'HIS':
+      residue.name = 'HIP'
+    else:
+        pass
+  return parm
+
 
 def run(arg_pdbout, arg_pdbin,
         arg_nohyd=False,
