@@ -183,7 +183,7 @@ def main():
     (opt, args) = parser.parse_args()
 
     if opt.pdbin == opt.pdbout:
-        print("The input and output file names cannot be the same!\n", file=sys.stderr)
+        print("The input and output file names cannot be the same!\n")
         sys.exit(1)
 
     # Make sure that if we are reading from stdin it's being directed from a pipe
