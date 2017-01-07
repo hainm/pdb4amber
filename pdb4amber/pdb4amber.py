@@ -132,8 +132,8 @@ def run(arg_pdbout, arg_pdbin,
         else:
             pdbfile = open(arg_pdbin, 'r')
         try:
-            reduce = os.path.join(os.getenv('AMBERHOME')
-                                  or '', 'bin', 'reduce')
+            reduce = os.path.join(os.getenv('AMBERHOME', '')
+                                  'bin', 'reduce')
             if not os.path.exists(reduce):
                 reduce = 'reduce'
             process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-'], stdin=pdbfile,
@@ -177,7 +177,7 @@ def run(arg_pdbout, arg_pdbin,
 
     # remove water if -d option used:=====================================
     if arg_dry:
-        water_mask = ':' + ','.join(pmd.residue.WATER_NAMES)
+        water_mask = ':' + ','.join(parmed.residue.WATER_NAMES)
         parm.strip(water_mask)
 
     # find histidines that might have to be changed:=====================

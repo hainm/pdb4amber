@@ -21,3 +21,18 @@ def test_dry():
         parm = pmd.load_file(pdb_out)
         resnames = set(res.name for res in parm.residues)
         assert not resnames.intersection(WATER_NAMES)
+
+def test_no_hydrogen():
+    option = '--nohyd'
+    pdb_out = 'out.pdb'
+    command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out, option] 
+
+    with tempfolder():
+        orig_parm = pmd.load_file(pdb_fn)
+        atom_names = set(atom.name for atom in orig_parm.atoms if atom.atomic_number == 1)
+        assert atom_names
+
+        subprocess.check_call(command)
+        parm = pmd.load_file(pdb_out)
+        atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
+        assert not atom_names
