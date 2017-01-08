@@ -144,9 +144,9 @@ def run(arg_pdbout, arg_pdbin,
                                   'bin', 'reduce')
             if not os.path.exists(reduce):
                 reduce = 'reduce'
-            process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-'], stdin=pdb_fh,
+            process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-'], stdin=subprocess.PIPE,
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = process.communicate()
+            out, err = process.communicate(str.encode(pdb_fh.read()))
             out = out.decode()
             err = err.decode()
             if process.wait():

@@ -72,6 +72,20 @@ def test_stdin_stdout():
         parm = pmd.read_PDB(input_pdb)
         assert len(parm.atoms) == 574
 
+def test_stdin_stdout_with_reduce():
+    ''' e.g: cat my.pdb | pdb4amber --reduce '''
+    pdb_fn = get_fn('2igd/2igd.pdb')
+    command = ['cat', pdb_fn, '|', 'pdb4amber', '--reduce'] 
+
+    with tempfolder():
+        # use shell=True since check_output return exit 1 with |
+        # not sure why.
+        output = subprocess.check_output(' '.join(command), shell=True).decode()
+        input_pdb = StringIO(output)
+        input_pdb.seek(0)
+        parm = pmd.read_PDB(input_pdb)
+        assert len(parm.atoms) == 1033
+
 def test_write_other_formats_like_mol2():
     # mol2
     pdb_out = 'out.mol2'
