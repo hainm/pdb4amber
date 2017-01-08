@@ -42,6 +42,23 @@ def test_no_hydrogen():
         atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
         assert not atom_names
 
+def test_prot_only():
+    option = '--pro'
+    pdb_out = 'out.pdb'
+    command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out, option] 
+
+    with tempfolder():
+        orig_parm = pmd.load_file(pdb_fn)
+        res_names = set(res.name for res in orig_parm.residues)
+        assert 'NO3' in res_names
+        assert 'HOH' in res_names
+
+        subprocess.check_call(command)
+        parm = pmd.load_file(pdb_out)
+        res_names = set(res.name for res in parm.residues)
+        assert 'NO3' not in res_names
+        assert 'HOH' not in res_names
+
 def test_reduce():
     option = '--reduce'
     pdb_fn = get_fn('2igd/2igd.pdb')
