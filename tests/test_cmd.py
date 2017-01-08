@@ -29,6 +29,16 @@ def test_dry():
         resnames = set(res.name for res in parm.residues)
         assert not resnames.intersection(WATER_NAMES)
 
+def test_onstantph():
+    option = '--constantph'
+    pdb_out = 'out.pdb'
+    command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out, option] 
+
+    with tempfolder():
+        # just run to increase code coverage
+        # we already test in another file
+        subprocess.check_call(command)
+
 def test_no_hydrogen():
     option = '--nohyd'
     pdb_out = 'out.pdb'
