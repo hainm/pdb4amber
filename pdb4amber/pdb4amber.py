@@ -1,8 +1,14 @@
 import os
 import sys
+import subprocess
 from itertools import chain
 from optparse import OptionParser
 import parmed
+
+try:
+    from io import StringIO
+except ImportError:
+    from cStringIO import StringIO
 
 # TODO: include in ParmEd?
 from .residue import (RESPROT, RESNA, RESSOLV, 
@@ -120,12 +126,13 @@ def run(arg_pdbout, arg_pdbin,
         arg_elbow=False
         ):
     stderr = sys.stderr
-    if log is not None:
-        sys.stderr = writer(log)
+    # if log is not None:
+    #     sys.stderr = writer(log)
     filename, extension = os.path.splitext(arg_pdbout)
     pdbin = arg_pdbin
 
     # optionally run reduce on input file
+    print(arg_reduce)
     if arg_reduce:
         if arg_pdbin == 'stdin':
             pdbfile = sys.stdin
@@ -149,7 +156,8 @@ def run(arg_pdbout, arg_pdbin,
             else:
                 open('reduce_info.log', 'w').write(err)
             pdbh = StringIO(out)
-            parm = parmed.load_file(pdbh)
+            # not using load_file since it does not read StringIO
+            parm = parmed.read_PDB(pdbh)
         finally:
             if pdbfile is not sys.stdin:
                 pdbfile.close()
@@ -166,7 +174,9 @@ def run(arg_pdbout, arg_pdbin,
     ns_names = find_non_starndard_resnames(parm)
 
     # write to pdb ifor non-starnd residues
-    parm[':' + ','.join(ns_names)].save('non_prot.pdb', overwrite=True)
+    ns_mask = ':' + ','.join(ns_names)
+    if ns_mask != ':':
+        parm[ns_mask].save('non_prot.pdb', overwrite=True)
     # ns_names = []
     # if arg_elbow:
     #     ns_names = find_non_starndard_resnames_elbow(parm)
@@ -242,8 +252,16 @@ def main():
         if os.isatty(sys.stdin.fileno()):
             sys.exit(parser.print_help() or 1)
 
-    run(opt.pdbout, opt.pdbin, opt.nohyd, opt.dry, opt.prot, opt.noter,
-        opt.constantph, opt.mostpop, opt.reduce, opt.model)
+    run(arg_pdbout=opt.pdbout,
+        arg_pdbin=opt.pdbin,
+        arg_nohyd=opt.nohyd,
+        arg_dry=opt.dry,
+        arg_prot=opt.prot,
+        arg_noter=opt.noter,
+        arg_constph=opt.constantph,
+        arg_mostpop=opt.mostpop,
+        arg_reduce=opt.reduce,
+        arg_model=opt.model)
 
 if __name__ == '__main__':
     main()

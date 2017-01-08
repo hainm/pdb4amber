@@ -1,3 +1,4 @@
+import os
 import subprocess
 import parmed as pmd
 from parmed.residue import WATER_NAMES
@@ -36,3 +37,20 @@ def test_no_hydrogen():
         parm = pmd.load_file(pdb_out)
         atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
         assert not atom_names
+
+def test_reduce():
+    option = '--reduce'
+    pdb_fn = get_fn('2igd/2igd.pdb')
+    pdb_out = 'out.pdb'
+    command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out, option] 
+    print(' '.join(command))
+
+    with tempfolder():
+        orig_parm = pmd.load_file(pdb_fn)
+        atom_names = set(atom.name for atom in orig_parm.atoms if atom.atomic_number == 1)
+        assert not atom_names
+
+        subprocess.call(command)
+        # parm = pmd.load_file(pdb_out)
+        # atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
+        # assert atom_names
