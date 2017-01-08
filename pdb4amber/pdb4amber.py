@@ -112,7 +112,6 @@ def find_gaps(parm):
 def find_incomplete(parm):
     return []
 
-
 def run(arg_pdbout, arg_pdbin,
         arg_nohyd=False,
         arg_dry=False,
@@ -237,8 +236,7 @@ def main():
     (opt, args) = parser.parse_args()
 
     if opt.pdbin == opt.pdbout:
-        print("The input and output file names cannot be the same!\n")
-        sys.exit(1)
+        raise RuntimeError("The input and output file names cannot be the same!\n")
 
     run(arg_pdbout=opt.pdbout,
         arg_pdbin=opt.pdbin,
