@@ -132,12 +132,8 @@ def run(arg_pdbout, arg_pdbin,
     pdbin = arg_pdbin
 
     # optionally run reduce on input file
-    print(arg_reduce)
     if arg_reduce:
-        if arg_pdbin == 'stdin':
-            pdbfile = sys.stdin
-        else:
-            pdbfile = open(arg_pdbin, 'r')
+        pdbfile = open(arg_pdbin, 'r')
         try:
             reduce = os.path.join(os.getenv('AMBERHOME', ''),
                                   'bin', 'reduce')
