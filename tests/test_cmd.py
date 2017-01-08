@@ -18,7 +18,7 @@ def test_dry():
         resnames = set(res.name for res in orig_parm.residues)
         assert resnames.intersection(WATER_NAMES)
 
-        subprocess.call(command)
+        subprocess.check_call(command)
         parm = pmd.load_file(pdb_out)
         resnames = set(res.name for res in parm.residues)
         assert not resnames.intersection(WATER_NAMES)
@@ -33,7 +33,7 @@ def test_no_hydrogen():
         atom_names = set(atom.name for atom in orig_parm.atoms if atom.atomic_number == 1)
         assert atom_names
 
-        subprocess.call(command)
+        subprocess.check_call(command)
         parm = pmd.load_file(pdb_out)
         atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
         assert not atom_names
@@ -50,7 +50,7 @@ def test_reduce():
         atom_names = set(atom.name for atom in orig_parm.atoms if atom.atomic_number == 1)
         assert not atom_names
 
-        subprocess.call(command)
+        subprocess.check_call(command)
         # parm = pmd.load_file(pdb_out)
         # atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
         # assert atom_names
