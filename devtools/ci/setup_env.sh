@@ -18,6 +18,8 @@ conda create -y -n myenv python=$PYTHON_VERSION
 source activate myenv
 conda install numpy nomkl -y
 conda install coverage -y 
+conda install ambertools -c hainm -y
+# make sure to install parmed after installing ambertools to overwrite
 conda install parmed -c ambermd -y
 
 # pytest
