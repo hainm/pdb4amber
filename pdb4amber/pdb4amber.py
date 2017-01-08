@@ -124,6 +124,9 @@ def run(arg_pdbout, arg_pdbin,
         arg_model=0,
         arg_elbow=False
         ):
+    if arg_pdbin == arg_pdbout:
+        raise RuntimeError("The input and output file names cannot be the same!\n")
+
     stderr = sys.stderr
     # if log is not None:
     #     sys.stderr = writer(log)
@@ -255,9 +258,6 @@ def main():
     parser.add_argument("--model", type=int, dest="model", default=0,
                       help="Model to use from a multi-model pdb file (integer).  (default: use all models)")
     opt = parser.parse_args()
-
-    if opt.pdbin == opt.pdbout:
-        raise RuntimeError("The input and output file names cannot be the same!\n")
 
     if opt.input is not None:
         pdbin = opt.input

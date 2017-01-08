@@ -2,11 +2,13 @@ import os
 import subprocess
 import parmed as pmd
 from parmed.residue import WATER_NAMES
+import pytest
 try:
     from io import StringIO
 except ImportError:
     from cStringIO import StringIO
 
+from pdb4amber import pdb4amber
 # local
 from utils import tempfolder, get_fn
 
@@ -122,3 +124,7 @@ def test_write_other_formats_like_mol2():
         subprocess.check_call(command)
         with open(pdb_out) as fh:
             assert fh.read().startswith('@<TRIPOS>MOLECULE')
+
+def test_increase_code_coverage_for_small_stuff():
+    with pytest.raises(RuntimeError):
+        pdb4amber.run('fake.pdb', 'fake.pdb')
