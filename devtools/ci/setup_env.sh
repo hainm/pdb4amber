@@ -20,7 +20,6 @@ conda install numpy nomkl -y
 conda install coverage -y 
 
 cat >$HOME/.amberrc <<EOF
-~/.amberrc 
 Name = travis-build
 Institution = travis
 City = travis
