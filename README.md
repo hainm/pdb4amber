@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/hainm/pdb4amber.svg?branch=master)](https://travis-ci.org/hainm/pdb4amber)
+[![Build Status](https://travis-ci.org/Amber-MD/pdb4amber.svg?branch=master)](https://travis-ci.org/Amber-MD/pdb4amber)
 [![Coverage Status](https://coveralls.io/repos/github/Amber-MD/pdb4amber/badge.svg?branch=master)](https://coveralls.io/github/Amber-MD/pdb4amber?branch=master)
 
 **Please do not use this repo yet**
