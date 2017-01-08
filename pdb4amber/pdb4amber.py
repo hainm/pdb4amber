@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 from itertools import chain
-from optparse import OptionParser
+import argparse
 import parmed
 
 try:
@@ -229,38 +229,43 @@ def run(arg_pdbout, arg_pdbin,
 
 
 def main():
-    parser = OptionParser(version=__version__)
-    parser.add_option("input", nargs='?',
-                      help="PDB input file                      (default: stdin)",
-    parser.add_option("-i", "--in", metavar="FILE", dest="pdbin",
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input", nargs='?',
+                      help="PDB input file                      (default: stdin)",)
+    parser.add_argument("-i", "--in", metavar="FILE", dest="pdbin",
                       help="PDB input file                      (default: stdin)",
                       default='stdin')
-    parser.add_option("-o", "--out", metavar="FILE", dest="pdbout",
+    parser.add_argument("-o", "--out", metavar="FILE", dest="pdbout",
                       help="PDB output file                     (default: stdout)",
                       default='stdout')
-    parser.add_option("-y", "--nohyd", action="store_true", dest="nohyd",
+    parser.add_argument("-y", "--nohyd", action="store_true", dest="nohyd",
                       help="remove all hydrogen atoms           (default: no)")
-    parser.add_option("-d", "--dry", action="store_true", dest="dry",
+    parser.add_argument("-d", "--dry", action="store_true", dest="dry",
                       help="remove all water molecules          (default: no)")
-    parser.add_option("-p", "--prot", action="store_true", dest="prot",
+    parser.add_argument("-p", "--prot", action="store_true", dest="prot",
                       help="keep only Amber-compatible residues (default: no)")
-    parser.add_option("--noter", action="store_true", dest="noter",
+    parser.add_argument("--noter", action="store_true", dest="noter",
                       help="remove TER, MODEL, ENDMDL cards     (default: no)")
-    parser.add_option("--constantph", action="store_true", dest="constantph",
+    parser.add_argument("--constantph", action="store_true", dest="constantph",
                       help="rename GLU,ASP,HIS for constant pH simulation")
-    parser.add_option("--most-populous", action="store_true", dest="mostpop",
+    parser.add_argument("--most-populous", action="store_true", dest="mostpop",
                       help="keep most populous alt. conf. (default is to keep 'A')")
-    parser.add_option("--reduce", action="store_true", dest="reduce",
+    parser.add_argument("--reduce", action="store_true", dest="reduce",
                       help="Run Reduce first to add hydrogens.  (default: no)")
-    parser.add_option("--model", type="int", dest="model", default=0,
+    parser.add_argument("--model", type=int, dest="model", default=0,
                       help="Model to use from a multi-model pdb file (integer).  (default: use all models)")
-    (opt, args) = parser.parse_args()
+    opt = parser.parse_args()
 
     if opt.pdbin == opt.pdbout:
         raise RuntimeError("The input and output file names cannot be the same!\n")
 
+    if opt.input is not None:
+        pdbin = opt.input
+    else:
+        pdbin = opt.pdbin
+
     run(arg_pdbout=opt.pdbout,
-        arg_pdbin=opt.pdbin,
+        arg_pdbin=pdbin,
         arg_nohyd=opt.nohyd,
         arg_dry=opt.dry,
         arg_prot=opt.prot,
