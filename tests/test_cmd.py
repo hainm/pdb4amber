@@ -51,6 +51,6 @@ def test_reduce():
         assert not atom_names
 
         subprocess.check_call(command)
-        # parm = pmd.load_file(pdb_out)
-        # atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
-        # assert atom_names
+        parm = pmd.load_file(pdb_out)
+        atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
+        assert atom_names
