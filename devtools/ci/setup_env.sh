@@ -18,6 +18,16 @@ conda create -y -n myenv python=$PYTHON_VERSION
 source activate myenv
 conda install numpy nomkl -y
 conda install coverage -y 
+
+cat >$HOME/.amberrc <<EOF
+~/.amberrc 
+Name = travis-build
+Institution = travis
+City = travis
+State or Province = travis
+Country = travis
+EOF
+
 conda install ambertools -c hainm -y
 # make sure to install parmed after installing ambertools to overwrite
 conda install parmed -c ambermd -y
