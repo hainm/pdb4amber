@@ -2,6 +2,10 @@ import os
 import subprocess
 import parmed as pmd
 from parmed.residue import WATER_NAMES
+try:
+    from io import StringIO
+except ImportError:
+    from cStringIO import StringIO
 
 # local
 from utils import tempfolder, get_fn
@@ -43,7 +47,6 @@ def test_reduce():
     pdb_fn = get_fn('2igd/2igd.pdb')
     pdb_out = 'out.pdb'
     command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out, option] 
-    print(' '.join(command))
 
     with tempfolder():
         orig_parm = pmd.load_file(pdb_fn)
@@ -54,6 +57,20 @@ def test_reduce():
         parm = pmd.load_file(pdb_out)
         atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
         assert atom_names
+
+def test_stdin_stdout():
+    ''' e.g: cat my.pdb | pdb4amber '''
+    pdb_fn = get_fn('2igd/2igd.pdb')
+    command = ['cat', pdb_fn, '|', 'pdb4amber'] 
+
+    with tempfolder():
+        # use shell=True since check_output return exit 1 with |
+        # not sure why.
+        output = subprocess.check_output(' '.join(command), shell=True).decode()
+        input_pdb = StringIO(output)
+        input_pdb.seek(0)
+        parm = pmd.read_PDB(input_pdb)
+        assert len(parm.atoms) == 574
 
 def test_write_other_formats_like_mol2():
     # mol2

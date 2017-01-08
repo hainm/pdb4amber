@@ -128,17 +128,23 @@ def run(arg_pdbout, arg_pdbin,
     # if log is not None:
     #     sys.stderr = writer(log)
     filename, extension = os.path.splitext(arg_pdbout)
-    pdbin = arg_pdbin
+    if arg_pdbin == 'stdin':
+        pdbin = StringIO(sys.stdin.read())
+    else:
+        pdbin = arg_pdbin
 
     # optionally run reduce on input file
     if arg_reduce:
-        pdbfile = open(arg_pdbin, 'r')
+        if not hasattr(pdbin, 'read'):
+            pdb_fh = open(pdbin, 'r')
+        else:
+            pdb_fh = pdbin
         try:
             reduce = os.path.join(os.getenv('AMBERHOME', ''),
                                   'bin', 'reduce')
             if not os.path.exists(reduce):
                 reduce = 'reduce'
-            process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-'], stdin=pdbfile,
+            process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-'], stdin=pdb_fh,
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = process.communicate()
             out = out.decode()
@@ -154,9 +160,14 @@ def run(arg_pdbout, arg_pdbin,
             # not using load_file since it does not read StringIO
             parm = parmed.read_PDB(pdbh)
         finally:
-            pdbfile.close()
+            pdb_fh.close()
     else:
-        parm = parmed.load_file(pdbin)
+        if hasattr(pdbin, 'read'):
+            # StringIO
+            # need to use read_PDB
+            parm = parmed.read_PDB(pdbin)
+        else:
+            parm = parmed.load_file(pdbin)
 
     # remove hydrogens if option -y is used:==============================
     if arg_nohyd:
@@ -204,8 +215,16 @@ def run(arg_pdbout, arg_pdbin,
     # make final output to new PDB file
     # =====================================================================
     parm.coordinates = parm.get_coordinates()[arg_model]
-    parm.save(arg_pdbout,
-              overwrite=True)
+    write_kwargs = dict(overwrite=True)
+    if arg_pdbout == 'stdout':
+        output = StringIO()
+        parm.write_pdb(output)
+    else:
+        output = arg_pdbout
+        parm.save(output, overwrite=True)
+    if isinstance(output, StringIO):
+        output.seek(0)
+        print(output.read())
     return ns_names, gaplist, sslist
 
 
