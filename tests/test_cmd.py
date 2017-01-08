@@ -54,3 +54,12 @@ def test_reduce():
         parm = pmd.load_file(pdb_out)
         atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
         assert atom_names
+
+def test_write_other_formats_like_mol2():
+    # mol2
+    pdb_out = 'out.mol2'
+    command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out] 
+    with tempfolder():
+        subprocess.check_call(command)
+        with open(pdb_out) as fh:
+            assert fh.read().startswith('@<TRIPOS>MOLECULE')
