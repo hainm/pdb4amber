@@ -72,6 +72,17 @@ def test_stdin_stdout():
         parm = pmd.read_PDB(input_pdb)
         assert len(parm.atoms) == 574
 
+def test_simplest_command_pdb4amber_mypdb():
+    pdb_fn = get_fn('2igd/2igd.pdb')
+    command = ['pdb4amber', pdb_fn] 
+
+    with tempfolder():
+        output = subprocess.check_output(' '.join(command), shell=True).decode()
+        input_pdb = StringIO(output)
+        input_pdb.seek(0)
+        parm = pmd.read_PDB(input_pdb)
+        assert len(parm.atoms) == 574
+
 def test_stdin_stdout_with_reduce():
     ''' e.g: cat my.pdb | pdb4amber --reduce '''
     pdb_fn = get_fn('2igd/2igd.pdb')

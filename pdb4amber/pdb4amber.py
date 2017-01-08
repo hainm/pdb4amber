@@ -230,6 +230,8 @@ def run(arg_pdbout, arg_pdbin,
 
 def main():
     parser = OptionParser(version=__version__)
+    parser.add_option("input", nargs='?',
+                      help="PDB input file                      (default: stdin)",
     parser.add_option("-i", "--in", metavar="FILE", dest="pdbin",
                       help="PDB input file                      (default: stdin)",
                       default='stdin')
