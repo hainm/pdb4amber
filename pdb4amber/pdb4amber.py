@@ -155,8 +155,7 @@ def run(arg_pdbout, arg_pdbin,
             # not using load_file since it does not read StringIO
             parm = parmed.read_PDB(pdbh)
         finally:
-            if pdbfile is not sys.stdin:
-                pdbfile.close()
+            pdbfile.close()
     else:
         parm = parmed.load_file(pdbin)
 
@@ -240,13 +239,6 @@ def main():
     if opt.pdbin == opt.pdbout:
         print("The input and output file names cannot be the same!\n")
         sys.exit(1)
-
-    # Make sure that if we are reading from stdin it's being directed from a pipe
-    # or a file. We don't want to wait for user input that will never come.
-
-    if opt.pdbin == 'stdin':
-        if os.isatty(sys.stdin.fileno()):
-            sys.exit(parser.print_help() or 1)
 
     run(arg_pdbout=opt.pdbout,
         arg_pdbin=opt.pdbin,
