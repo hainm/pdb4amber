@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pdb4amber package &#8212; pdb4amber 0.3 documentation</title>
+    <title>pdb4amber package &#8212; pdb4amber 1.3 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3',
+        VERSION:     '1.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="pdb4amber 0.3 documentation" href="index.html" /> 
+    <link rel="top" title="pdb4amber 1.3 documentation" href="index.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pdb4amber 0.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pdb4amber 1.3 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -58,24 +58,48 @@
 <dt id="pdb4amber.pdb4amber.assign_his">
 <code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">assign_his</code><span class="sig-paren">(</span><em>parm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#assign_his"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.assign_his" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assign correct name for Histidine based on the atom name</p>
-<p>parm : parmed.Structure (or derived)</p>
-<p>parm : updated <cite>parm</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parm</strong> : <code class="xref py py-class docutils literal"><span class="pre">parmed.Structure</span></code> (or derived)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>parm</strong> : updated <cite>parm</cite></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="pdb4amber.pdb4amber.constph">
 <code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">constph</code><span class="sig-paren">(</span><em>parm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#constph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.constph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update AS4, GL4, HIP for constph.</p>
-<p>parm : parmed.Structure or derived class</p>
-<p>parm : updated <cite>parm</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parm</strong> : parmed.Structure or derived class</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>parm</strong> : updated <cite>parm</cite></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="pdb4amber.pdb4amber.find_disulfide">
 <code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">find_disulfide</code><span class="sig-paren">(</span><em>parm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#find_disulfide"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.find_disulfide" title="Permalink to this definition">¶</a></dt>
 <dd><p>return set of cys-cys pairs</p>
-<p>parm : parmed.Structure (or derived class)</p>
-<p>cys_cys_set : Set[List[int, int]]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parm</strong> : parmed.Structure (or derived class)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>cys_cys_set</strong> : Set[List[int, int]]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -102,8 +126,16 @@
 <dt id="pdb4amber.pdb4amber.rename_cys_to_cyx">
 <code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">rename_cys_to_cyx</code><span class="sig-paren">(</span><em>parm</em>, <em>cys_cys_set</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#rename_cys_to_cyx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.rename_cys_to_cyx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rename CYS to CYX of having S-S bond.</p>
-<p>parm : parmed.Structure (or derived class)
-cys_cys_set : Set[List[int, int]]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parm</strong> : parmed.Structure (or derived class)</p>
+<p class="last"><strong>cys_cys_set</strong> : Set[List[int, int]]</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -167,7 +199,7 @@ cys_cys_set : Set[List[int, int]]</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pdb4amber 0.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pdb4amber 1.3 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
