@@ -6,9 +6,11 @@ import argparse
 import parmed
 
 try:
-    from io import StringIO
-except ImportError:
     from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
+
+PY3 = sys.version_info[0] == 3
 
 # TODO: include in ParmEd?
 from .residue import (RESPROT, RESNA, RESSOLV, 
@@ -132,7 +134,10 @@ def run(arg_pdbout, arg_pdbin,
     #     sys.stderr = writer(log)
     filename, extension = os.path.splitext(arg_pdbout)
     if arg_pdbin == 'stdin':
-        pdbin = StringIO(sys.stdin.read())
+        if PY3:
+            pdbin = StringIO(sys.stdin.read())
+        else:
+            pdbin = sys.stdin
     else:
         pdbin = arg_pdbin
 
@@ -222,12 +227,11 @@ def run(arg_pdbout, arg_pdbin,
     if arg_pdbout == 'stdout':
         output = StringIO()
         parm.write_pdb(output)
+        output.seek(0)
+        print(output.read())
     else:
         output = arg_pdbout
         parm.save(output, overwrite=True)
-    if isinstance(output, StringIO):
-        output.seek(0)
-        print(output.read())
     return ns_names, gaplist, sslist
 
 
