@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="Python">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pdb4amber package &#8212; pdb4amber 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="pdb4amber 0.3 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pdb4amber 0.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pdb4amber-package">
+<h1>pdb4amber package<a class="headerlink" href="#pdb4amber-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pdb4amber.pdb4amber">
+<span id="pdb4amber-pdb4amber-module"></span><h2>pdb4amber.pdb4amber module<a class="headerlink" href="#module-pdb4amber.pdb4amber" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pdb4amber.pdb4amber.assign_his">
+<code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">assign_his</code><span class="sig-paren">(</span><em>parm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#assign_his"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.assign_his" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign correct name for Histidine based on the atom name</p>
+<p>parm : parmed.Structure (or derived)</p>
+<p>parm : updated <cite>parm</cite></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pdb4amber.pdb4amber.constph">
+<code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">constph</code><span class="sig-paren">(</span><em>parm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#constph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.constph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update AS4, GL4, HIP for constph.</p>
+<p>parm : parmed.Structure or derived class</p>
+<p>parm : updated <cite>parm</cite></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pdb4amber.pdb4amber.find_disulfide">
+<code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">find_disulfide</code><span class="sig-paren">(</span><em>parm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#find_disulfide"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.find_disulfide" title="Permalink to this definition">¶</a></dt>
+<dd><p>return set of cys-cys pairs</p>
+<p>parm : parmed.Structure (or derived class)</p>
+<p>cys_cys_set : Set[List[int, int]]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pdb4amber.pdb4amber.find_gaps">
+<code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">find_gaps</code><span class="sig-paren">(</span><em>parm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#find_gaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.find_gaps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdb4amber.pdb4amber.find_incomplete">
+<code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">find_incomplete</code><span class="sig-paren">(</span><em>parm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#find_incomplete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.find_incomplete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdb4amber.pdb4amber.find_non_starndard_resnames">
+<code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">find_non_starndard_resnames</code><span class="sig-paren">(</span><em>parm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#find_non_starndard_resnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.find_non_starndard_resnames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdb4amber.pdb4amber.main">
+<code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdb4amber.pdb4amber.rename_cys_to_cyx">
+<code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">rename_cys_to_cyx</code><span class="sig-paren">(</span><em>parm</em>, <em>cys_cys_set</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#rename_cys_to_cyx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.rename_cys_to_cyx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename CYS to CYX of having S-S bond.</p>
+<p>parm : parmed.Structure (or derived class)
+cys_cys_set : Set[List[int, int]]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pdb4amber.pdb4amber.run">
+<code class="descclassname">pdb4amber.pdb4amber.</code><code class="descname">run</code><span class="sig-paren">(</span><em>arg_pdbout</em>, <em>arg_pdbin</em>, <em>arg_nohyd=False</em>, <em>arg_dry=False</em>, <em>arg_prot=False</em>, <em>arg_noter=False</em>, <em>arg_constph=False</em>, <em>arg_mostpop=False</em>, <em>log=None</em>, <em>arg_reduce=False</em>, <em>arg_model=0</em>, <em>arg_elbow=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdb4amber/pdb4amber.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pdb4amber.pdb4amber.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pdb4amber.residue">
+<span id="pdb4amber-residue-module"></span><h2>pdb4amber.residue module<a class="headerlink" href="#module-pdb4amber.residue" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pdb4amber">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pdb4amber" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pdb4amber package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pdb4amber.pdb4amber">pdb4amber.pdb4amber module</a></li>
+<li><a class="reference internal" href="#module-pdb4amber.residue">pdb4amber.residue module</a></li>
+<li><a class="reference internal" href="#module-pdb4amber">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pdb4amber.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pdb4amber 0.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Romain M. Wolf and AMBER developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>
