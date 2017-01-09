@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys
+import pdb4amber
 
 try:
     if '--no-setuptools' in sys.argv:
@@ -15,7 +16,7 @@ except ImportError:
     }
 
 setup(name='pdb4amber',
-      version='1.3',
+      version=pdb4amber.__version__,
       description='PDB analyzer to prepare PDB files for Amber simulations.',
       author='Romain M. Wolf and AMBER developers',
       author_email='amber@ambermd.org',

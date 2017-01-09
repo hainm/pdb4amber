@@ -30,6 +30,8 @@
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+import pdb4amber
+
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
@@ -66,7 +68,7 @@ author = 'Romain M. Wolf and AMBER developers'
 # built documents.
 #
 # The short X.Y version.
-version = '0.3'
+version = pdb4amber.__version__
 # The full version, including alpha/beta/rc tags.
 release = '0.3'
 
