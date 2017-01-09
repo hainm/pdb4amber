@@ -223,15 +223,25 @@ def run(arg_pdbout, arg_pdbin,
     # make final output to new PDB file
     # =====================================================================
     parm.coordinates = parm.get_coordinates()[arg_model]
-    write_kwargs = dict(overwrite=True)
+    if arg_mostpop:
+        write_kwargs = dict(altlocs='occupancy')
+    else:
+        write_kwargs = dict(altlocs='first')
+    # remove altlocs label
+    for atom in parm.atoms:
+        atom.altloc = ''
     if arg_pdbout == 'stdout':
         output = StringIO()
-        parm.write_pdb(output)
+        parm.write_pdb(output, **write_kwargs)
         output.seek(0)
         print(output.read())
     else:
         output = arg_pdbout
-        parm.save(output, overwrite=True)
+        try:
+            parm.save(output, overwrite=True, **write_kwargs)
+        except TypeError:
+            # mol2 does not accept altloc keyword
+            parm.save(output, overwrite=True)
     return ns_names, gaplist, sslist
 
 
