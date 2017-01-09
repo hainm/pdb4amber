@@ -34,6 +34,7 @@ import pdb4amber
 
 extensions = [
     'sphinx.ext.autodoc',
+    'numpydoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.mathjax',
