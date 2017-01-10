@@ -88,8 +88,10 @@ def find_disulfide(parm):
     for residue in residues:
         for atom in residue.atoms:
             if 'SG' in atom.name:
-                cys_cys_set.add((atom.bonds[0].atom1.residue.idx,
-                                 atom.bonds[0].atom2.residue.idx))
+                for partner in atom.bond_partners:
+                    if partner.residue.name.startswith('CY') and partner.name.startswith('SG'):
+                        cys_cys_set.add((atom.residue.idx,
+                                         partner.residue.idx))
     return sorted(cys_cys_set)
 
 def rename_cys_to_cyx(parm, cys_cys_set):
@@ -188,8 +190,10 @@ def run(arg_pdbout, arg_pdbin,
 
     # write to pdb ifor non-starnd residues
     ns_mask = ':' + ','.join(ns_names)
+    print('hello', ns_mask)
+    print(filename)
     if ns_mask != ':':
-        parm[ns_mask].save('non_prot.pdb', overwrite=True)
+        parm[ns_mask].save(filename + '_nonprot.pdb', overwrite=True)
     # ns_names = []
     # if arg_elbow:
     #     ns_names = find_non_starndard_resnames_elbow(parm)
