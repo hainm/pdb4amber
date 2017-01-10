@@ -108,14 +108,14 @@ def rename_cys_to_cyx(parm, cys_cys_set):
         residue.name = 'CYX'
 
 def find_non_starndard_resnames(parm):
-    ns_names = []
+    ns_names = set()
     for residue in parm.residues:
         if len(residue.name) > 3:
             rname = residue.name[:3]
         else:
             rname = residue.name
         if rname.strip() not in AMBER_SUPPORTED_RESNAMES:
-            ns_names.append(rname)
+            ns_names.add(rname)
     return ns_names
 
 def find_gaps(parm):
