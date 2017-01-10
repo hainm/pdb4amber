@@ -102,6 +102,7 @@ def test_stdin_stdout():
         assert len(parm.atoms) == 574
 
 def test_simplest_command_pdb4amber_mypdb():
+    # pdb4amber my.pdb
     pdb_fn = get_fn('2igd/2igd.pdb')
     command = ['pdb4amber', pdb_fn] 
 
@@ -111,6 +112,14 @@ def test_simplest_command_pdb4amber_mypdb():
         input_pdb.seek(0)
         parm = pmd.read_PDB(input_pdb)
         assert len(parm.atoms) == 574
+
+    # pdb4amber
+    # expect help
+    command = ['pdb4amber']
+    with tempfolder():
+        output = subprocess.check_output(command).decode()
+        assert 'usage: pdb4amber' in output
+
 
 def test_stdin_stdout_with_reduce():
     ''' e.g: cat my.pdb | pdb4amber --reduce '''

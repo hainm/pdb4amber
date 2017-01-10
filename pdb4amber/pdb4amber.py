@@ -283,6 +283,12 @@ def main():
     else:
         pdbin = opt.pdbin
 
+    if opt.pdbin == 'stdin' and opt.input is None:
+        if os.isatty(sys.stdin.fileno()):
+            parser.print_help()
+            print('hello thre')
+            sys.exit(0)
+
     run(arg_pdbout=opt.pdbout,
         arg_pdbin=pdbin,
         arg_nohyd=opt.nohyd,
