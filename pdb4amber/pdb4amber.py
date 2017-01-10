@@ -90,8 +90,9 @@ def find_disulfide(parm):
             if 'SG' in atom.name:
                 for partner in atom.bond_partners:
                     if partner.residue.name.startswith('CY') and partner.name.startswith('SG'):
-                        cys_cys_set.add((atom.residue.idx,
-                                         partner.residue.idx))
+                        # use tuple for hashing
+                        cys_cys_set.add(tuple(sorted((atom.residue.idx,
+                                         partner.residue.idx))))
     return sorted(cys_cys_set)
 
 def rename_cys_to_cyx(parm, cys_cys_set):

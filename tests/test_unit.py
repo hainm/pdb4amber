@@ -28,6 +28,10 @@ def test_find_disulfide():
     cys_cys_set = pdb4amber.find_disulfide(parm)
     assert sorted(cys_cys_set) == [(5, 126), (29, 114), (63, 79), (75, 93)]
 
+    one_cys_parm = parm[':CYS'][':1']
+    print(pdb4amber.find_disulfide(one_cys_parm))
+    assert not pdb4amber.find_disulfide(one_cys_parm)
+
 def test_strip_water():
     fn = get_fn('4lzt/4lzt_h.pdb')
     parm = pmd.load_file(fn)
