@@ -108,8 +108,15 @@ def rename_cys_to_cyx(parm, cys_cys_set):
         residue.name = 'CYX'
 
 def find_non_starndard_resnames(parm):
-    return set([res.name for res in parm.residues
-                if res.name.strip() not in AMBER_SUPPORTED_RESNAMES])
+    ns_names = []
+    for residue in parm.residues:
+        if len(residue.name) > 3:
+            rname = residue.name[:3]
+        else:
+            rname = residue.name
+        if rname.strip() not in AMBER_SUPPORTED_RESNAMES:
+            ns_names.append(rname)
+    return ns_names
 
 def find_gaps(parm):
     return []
@@ -189,13 +196,9 @@ def run(arg_pdbout, arg_pdbin,
     #         non-standard residue names?
     ns_names = find_non_starndard_resnames(parm)
 
-    # write to pdb ifor non-starnd residues
     ns_mask = ':' + ','.join(ns_names)
-    print('hello', ns_mask)
-    print(filename)
     if ns_mask != ':':
         parm[ns_mask].save(filename + '_nonprot.pdb', overwrite=True)
-    # ns_names = []
     # if arg_elbow:
     #     ns_names = find_non_starndard_resnames_elbow(parm)
 
@@ -286,7 +289,6 @@ def main():
     if opt.pdbin == 'stdin' and opt.input is None:
         if os.isatty(sys.stdin.fileno()):
             parser.print_help()
-            print('hello thre')
             sys.exit(0)
 
     run(arg_pdbout=opt.pdbout,
