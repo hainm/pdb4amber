@@ -37,4 +37,6 @@ pdb4amber my.podb --reduce -o out.pdb
 
 Test
 ----
+```bash
 py.test -vs .
+```
