@@ -36,13 +36,12 @@ def assign_his(parm):
 
     for residue in parm.residues:
         if residue.name in possible_names:
-            atom_name_set = set(atom.name for atom in residue.atoms)
-            if 'HD1' in atom_name_set and 'HE2' in atom_name_set:
+            atom_name_set = sorted(set(atom.name for atom in residue.atoms
+                                if atom.atomic_number==1))
+            if set(['HD1', 'HE1', 'HE2']).issubset(atom_name_set):
                 residue.name = 'HIP'
-            elif 'HD1' in atom_name_set and 'HE2' not in atom_name_set:
+            elif 'HD1' in atom_name_set:
                 residue.name = 'HID'
-            elif 'HD1' not in atom_name_set and 'HE2' in atom_name_set:
-                residue.name = 'HIE'
             else:
                 residue.name = 'HIE'
     return parm
