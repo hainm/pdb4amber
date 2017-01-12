@@ -123,6 +123,18 @@ def find_gaps(parm):
 def find_incomplete(parm):
     return []
 
+def _write_pdb_to_stringio(parm):
+    '''
+
+    Parameters
+    ----------
+    parm : parmed.Structure or derived class
+    '''
+    stringio_file = StringIO()
+    parm.write_pdb(stringio_file)
+    stringio_file.seek(0)
+    return stringio_file
+
 def run(arg_pdbout, arg_pdbin,
         arg_nohyd=False,
         arg_dry=False,
@@ -156,6 +168,9 @@ def run(arg_pdbout, arg_pdbin,
             pdb_fh = open(pdbin, 'r')
         else:
             pdb_fh = pdbin
+        if not parmed.formats.PDBFile.id_format(pdbin):
+            pdb_fh = _write_pdb_to_stringio(parmed.load_file(pdbin))
+        pdb_fh.seek(0)
         try:
             reduce = os.path.join(os.getenv('AMBERHOME', ''),
                                   'bin', 'reduce')
