@@ -33,6 +33,8 @@ pdb4amber my.pdb -o out.mol2
 # use `reduce` program to add hydgron
 pdb4amber my.podb --reduce -o out.pdb
 
+# process other formts (e.g: .cif')
+pdb4amber my.cif --reduce -o out.pdb
 ```
 
 Test
