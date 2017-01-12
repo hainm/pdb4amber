@@ -35,6 +35,9 @@ pdb4amber my.podb --reduce -o out.pdb
 
 # process other formts (e.g: .cif')
 pdb4amber my.cif --reduce -o out.pdb
+
+# fetch structure by its pdbid and process
+pdb4amber 1tsu --pdbid --reduce -o out.pdb
 ```
 
 Test
