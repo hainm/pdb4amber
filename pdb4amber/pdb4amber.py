@@ -171,7 +171,6 @@ def run(arg_pdbout, arg_pdbin,
                 pdb_fh = open(pdbin, 'r')
         else:
             pdb_fh = pdbin
-        pdb_fh.seek(0)
         try:
             reduce = os.path.join(os.getenv('AMBERHOME', ''),
                                   'bin', 'reduce')
