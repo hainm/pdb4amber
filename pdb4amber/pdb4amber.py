@@ -165,11 +165,12 @@ def run(arg_pdbout, arg_pdbin,
     # optionally run reduce on input file
     if arg_reduce:
         if not hasattr(pdbin, 'read'):
-            pdb_fh = open(pdbin, 'r')
+            if not parmed.formats.PDBFile.id_format(pdbin):
+                pdb_fh = _write_pdb_to_stringio(parmed.load_file(pdbin))
+            else:
+                pdb_fh = open(pdbin, 'r')
         else:
             pdb_fh = pdbin
-        if not parmed.formats.PDBFile.id_format(pdbin):
-            pdb_fh = _write_pdb_to_stringio(parmed.load_file(pdbin))
         pdb_fh.seek(0)
         try:
             reduce = os.path.join(os.getenv('AMBERHOME', ''),
