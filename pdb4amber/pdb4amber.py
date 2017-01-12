@@ -165,7 +165,9 @@ def run(arg_pdbout, arg_pdbin,
     # optionally run reduce on input file
     if arg_reduce:
         if not hasattr(pdbin, 'read'):
-            if not parmed.formats.PDBFile.id_format(pdbin):
+            if isinstance(pdbin, parmed.Structure):
+                pdb_fh = _write_pdb_to_stringio(pdbin)
+            elif not parmed.formats.PDBFile.id_format(pdbin):
                 pdb_fh = _write_pdb_to_stringio(parmed.load_file(pdbin))
             else:
                 pdb_fh = open(pdbin, 'r')
@@ -194,7 +196,9 @@ def run(arg_pdbout, arg_pdbin,
         finally:
             pdb_fh.close()
     else:
-        if hasattr(pdbin, 'read'):
+        if isinstance(pdbin, parmed.Structure):
+            parm = pdbin
+        elif hasattr(pdbin, 'read'):
             # StringIO
             # need to use read_PDB
             parm = parmed.read_PDB(pdbin)
@@ -291,14 +295,22 @@ def main():
                       help="keep most populous alt. conf. (default is to keep 'A')")
     parser.add_argument("--reduce", action="store_true", dest="reduce",
                       help="Run Reduce first to add hydrogens.  (default: no)")
+    parser.add_argument("--pdbid", action="store_true", dest="pdbid",
+                      help="fetch structure with given pdbid, "
+                           "should combined with -i option.\n"
+                           "Subjected to change")
     parser.add_argument("--model", type=int, dest="model", default=0,
                       help="Model to use from a multi-model pdb file (integer).  (default: use all models)")
     opt = parser.parse_args()
 
+    # pdbin : {str, file object, parmed.Structure}
     if opt.input is not None:
         pdbin = opt.input
     else:
         pdbin = opt.pdbin
+
+    if opt.pdbid:
+        pdbin = parmed.download_PDB(pdbin)
 
     if opt.pdbin == 'stdin' and opt.input is None:
         if os.isatty(sys.stdin.fileno()):

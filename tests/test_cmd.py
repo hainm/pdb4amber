@@ -113,6 +113,30 @@ def test_stdin_stdout():
         parm = pmd.read_PDB(input_pdb)
         assert len(parm.atoms) == 574
 
+def test_fetch_pdbid():
+    ''' e.g: pdb4amber 1l2y --pdbid '''
+    pdb_fn = '1l2y'
+    command = ['pdb4amber', pdb_fn, '--pdbid']
+
+    with tempfolder():
+        output = subprocess.check_output(command).decode()
+        input_pdb = StringIO(output)
+        input_pdb.seek(0)
+        parm = pmd.read_PDB(input_pdb)
+        assert len(parm.atoms) == 304
+        
+def test_fetch_pdbid_and_use_reduce():
+    ''' e.g: pdb4amber 1tsu --pdbid --reduce'''
+    pdb_fn = '1tsu'
+    command = ['pdb4amber', pdb_fn, '--pdbid', '--reduce']
+
+    with tempfolder():
+        output = subprocess.check_output(command).decode()
+        input_pdb = StringIO(output)
+        input_pdb.seek(0)
+        parm = pmd.read_PDB(input_pdb)
+        assert len(parm.atoms) == 3174
+
 def test_simplest_command_pdb4amber_mypdb():
     # pdb4amber my.pdb
     pdb_fn = get_fn('2igd/2igd.pdb')
