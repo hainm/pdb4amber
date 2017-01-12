@@ -28,8 +28,6 @@ Country = travis
 EOF
 
 conda install ambertools -c hainm -y
-# make sure to install parmed after installing ambertools to overwrite
-conda install parmed -c ambermd -y
 
 # pytest
 pip install pytest

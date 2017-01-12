@@ -71,7 +71,7 @@ def test_prot_only():
         assert 'NO3' not in res_names
         assert 'HOH' not in res_names
 
-def test_reduce():
+def test_reduce_with_pdb_input():
     option = '--reduce'
     pdb_fn = get_fn('2igd/2igd.pdb')
     pdb_out = 'out.pdb'
@@ -82,6 +82,18 @@ def test_reduce():
         atom_names = set(atom.name for atom in orig_parm.atoms if atom.atomic_number == 1)
         assert not atom_names
 
+        subprocess.check_call(command)
+        parm = pmd.load_file(pdb_out)
+        atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
+        assert atom_names
+
+def test_reduce_with_cif_input():
+    option = '--reduce'
+    pdb_fn = get_fn('2igd/2igd.cif')
+    pdb_out = 'out.pdb'
+    command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out, option] 
+
+    with tempfolder():
         subprocess.check_call(command)
         parm = pmd.load_file(pdb_out)
         atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
