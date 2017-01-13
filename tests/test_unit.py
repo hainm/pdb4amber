@@ -57,9 +57,8 @@ def test_run_with_StringIO_log():
     stringio_file.seek(0)
     assert 'Summary of pdb4amber' in stringio_file.read()
 
-def test_run_with_stderr_log():
+def test_run_with_stderr_stdout_log():
     # dummy
-    stringio_file = StringIO()
     with tempfolder():
          output = subprocess.check_call([
              'pdb4amber',
@@ -67,7 +66,16 @@ def test_run_with_stderr_log():
              '-o',
              'out.pdb',
              '--logfile=stderr',
-         ], stderr=subprocess.STDOUT)
+         ])
+
+    with tempfolder():
+         output = subprocess.check_call([
+             'pdb4amber',
+             get_fn('4lzt/4lzt_h.pdb'),
+             '-o',
+             'out.pdb',
+             '--logfile=stdout',
+         ])
 
 def test_run_with_filename_log():
     stringio_file = StringIO()
