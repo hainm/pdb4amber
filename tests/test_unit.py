@@ -1,7 +1,11 @@
-from utils import get_fn
-from pdb4amber.pdb4amber import assign_his, constph
+import sys
+import subprocess
+from pdb4amber.pdb4amber import assign_his, constph, StringIO
 from pdb4amber import pdb4amber
 import parmed as pmd
+
+# local
+from utils import get_fn, tempfolder
 
 def test_assign_his():
     fn = get_fn('4lzt/4lzt_h.pdb')
@@ -44,3 +48,49 @@ def test_find_non_starndard_resnames():
     fn = get_fn('4lzt/4lzt_h.pdb')
     parm = pmd.load_file(fn)
     assert pdb4amber.find_non_starndard_resnames(parm) == {'NO3'}
+
+def test_run_with_StringIO_log():
+    stringio_file = StringIO()
+    with tempfolder():
+         pdb4amber.run(arg_pdbout='out.pdb', arg_pdbin=get_fn('4lzt/4lzt_h.pdb'),
+            arg_logfile=stringio_file)
+    stringio_file.seek(0)
+    assert 'Summary of pdb4amber' in stringio_file.read()
+
+def test_run_with_stderr_stdout_log():
+    # dummy
+    with tempfolder():
+         output = subprocess.check_call([
+             'pdb4amber',
+             get_fn('4lzt/4lzt_h.pdb'),
+             '-o',
+             'out.pdb',
+             '--logfile=stderr',
+         ])
+
+    with tempfolder():
+         output = subprocess.check_call([
+             'pdb4amber',
+             get_fn('4lzt/4lzt_h.pdb'),
+             '-o',
+             'out.pdb',
+             '--logfile=stdout',
+         ])
+
+def test_run_with_filename_log():
+    stringio_file = StringIO()
+
+    # default
+    logfile = 'pdb4amber.log'
+    with tempfolder():
+         pdb4amber.run(arg_pdbout='out.pdb', arg_pdbin=get_fn('4lzt/4lzt_h.pdb'))
+         with open(logfile) as fh:
+              assert 'Summary of pdb4amber' in fh.read()
+
+    # given name
+    logfile = 'hello.log'
+    with tempfolder():
+         pdb4amber.run(arg_pdbout='out.pdb', arg_pdbin=get_fn('4lzt/4lzt_h.pdb'),
+                 arg_logfile=logfile)
+         with open(logfile) as fh:
+              assert 'Summary of pdb4amber' in fh.read()
