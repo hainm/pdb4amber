@@ -342,6 +342,12 @@ def main():
         if os.isatty(sys.stdin.fileno()):
             parser.print_help()
             sys.exit(0)
+    if opt.logfile == 'stderr':
+        logfile = sys.stderr
+    elif opt.logfile == 'stdout':
+        logfile = sys.stdout
+    else:
+        logfile = opt.logfile
 
     run(arg_pdbout=opt.pdbout,
         arg_pdbin=pdbin,
@@ -353,7 +359,7 @@ def main():
         arg_mostpop=opt.mostpop,
         arg_reduce=opt.reduce,
         arg_model=opt.model,
-        arg_logfile=opt.logfile)
+        arg_logfile=logfile)
 
 if __name__ == '__main__':
     main()

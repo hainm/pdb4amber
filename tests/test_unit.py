@@ -1,3 +1,5 @@
+import sys
+import subprocess
 from pdb4amber.pdb4amber import assign_his, constph, StringIO
 from pdb4amber import pdb4amber
 import parmed as pmd
@@ -54,6 +56,18 @@ def test_run_with_StringIO_log():
             arg_logfile=stringio_file)
     stringio_file.seek(0)
     assert 'Summary of pdb4amber' in stringio_file.read()
+
+def test_run_with_stderr_log():
+    # dummy
+    stringio_file = StringIO()
+    with tempfolder():
+         output = subprocess.check_call([
+             'pdb4amber',
+             get_fn('4lzt/4lzt_h.pdb'),
+             '-o',
+             'out.pdb',
+             '--logfile=stderr',
+         ], stderr=subprocess.STDOUT)
 
 def test_run_with_filename_log():
     stringio_file = StringIO()
