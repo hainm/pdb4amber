@@ -16,6 +16,10 @@ except ImportError:
     from io import StringIO
 
 PY3 = sys.version_info[0] == 3
+if PY3:
+    string_types = str
+else:
+    string_types = basestring
 
 # TODO: include in ParmEd?
 from .residue import (RESPROT, RESNA, RESSOLV, 
@@ -154,7 +158,12 @@ def run(arg_pdbout, arg_pdbin,
         arg_logfile='pdb4amber.log'
         ):
 
-    logfile_handler = logging.FileHandler(arg_logfile)
+    if isinstance(arg_logfile, string_types):
+         logfile_handler = logging.FileHandler(arg_logfile)
+    elif hasattr(arg_logfile, 'write'):
+         logfile_handler = logging.StreamHandler(arg_logfile)
+    else:
+        raise ValueError("wrong arg_logfile: must be either string or file object")
     logger.addHandler(logfile_handler)
     name = arg_pdbin if not hasattr(arg_pdbin, '__name__') else arg_pdbin.__name__
     logger.info("\n==================================================")
