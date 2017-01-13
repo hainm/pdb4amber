@@ -1,8 +1,6 @@
 [![Build Status](https://travis-ci.org/Amber-MD/pdb4amber.svg?branch=master)](https://travis-ci.org/Amber-MD/pdb4amber)
 [![Coverage Status](https://coveralls.io/repos/github/Amber-MD/pdb4amber/badge.png?branch=master)](https://coveralls.io/github/Amber-MD/pdb4amber?branch=master)
 
-**Please do not use this repo yet**
-
 Install
 -------
 ```bash
@@ -38,6 +36,10 @@ pdb4amber my.cif --reduce -o out.pdb
 
 # fetch structure by its pdbid and process
 pdb4amber 1tsu --pdbid --reduce -o out.pdb
+
+# logfile
+pdb4amber my.pdb -o out.pdb --logfile=my.log
+pdb4amber my.pdb -o out.pdb --logfile=stdout
 ```
 
 Test
