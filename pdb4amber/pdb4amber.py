@@ -156,6 +156,10 @@ def run(arg_pdbout, arg_pdbin,
 
     logfile_handler = logging.FileHandler(arg_logfile)
     logger.addHandler(logfile_handler)
+    name = arg_pdbin if not hasattr(arg_pdbin, '__name__') else arg_pdbin.__name__
+    logger.info("\n==================================================")
+    logger.info("Summary of pdb4amber for: %s" % name)
+    logger.info("===================================================")
 
     if arg_pdbin == arg_pdbout:
         raise RuntimeError("The input and output file names cannot be the same!\n")
