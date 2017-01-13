@@ -5,6 +5,11 @@ from itertools import chain
 import argparse
 import parmed
 
+import logging
+
+logger = logging.getLogger('pdb4amber_log')
+logger.setLevel(logging.DEBUG)
+
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -118,6 +123,7 @@ def find_non_starndard_resnames(parm):
     return ns_names
 
 def find_gaps(parm):
+    logger.info('finding gap')
     return []
 
 def find_incomplete(parm):
@@ -142,11 +148,15 @@ def run(arg_pdbout, arg_pdbin,
         arg_noter=False,
         arg_constph=False,
         arg_mostpop=False,
-        log=None,
         arg_reduce=False,
         arg_model=0,
-        arg_elbow=False
+        arg_elbow=False,
+        arg_logfile='pdb4amber.log'
         ):
+
+    logfile_handler = logging.FileHandler(arg_logfile)
+    logger.addHandler(logfile_handler)
+
     if arg_pdbin == arg_pdbout:
         raise RuntimeError("The input and output file names cannot be the same!\n")
 
@@ -184,9 +194,10 @@ def run(arg_pdbout, arg_pdbin,
             out = out.decode()
             err = err.decode()
             if process.wait():
-                print >> sys.stderr, ("REDUCE returned non-zero exit status: "
-                                      "See reduce_info.log for more details")
-                open('reduce_info.log', 'w').write(err)
+                logger.error("REDUCE returned non-zero exit status: "
+                               "See reduce_info.log for more details")
+                with open('reduce_info.log', 'w') as fh:
+                    fh.write(err)
             # print out the reduce log even if it worked
             else:
                 open('reduce_info.log', 'w').write(err)
@@ -301,6 +312,8 @@ def main():
                            "Subjected to change")
     parser.add_argument("--model", type=int, dest="model", default=0,
                       help="Model to use from a multi-model pdb file (integer).  (default: use all models)")
+    parser.add_argument("-l", "--logfile", metavar="FILE", dest="logfile",
+                      help="log filename", default='pdb4amber.log')
     opt = parser.parse_args()
 
     # pdbin : {str, file object, parmed.Structure}
@@ -326,7 +339,8 @@ def main():
         arg_constph=opt.constantph,
         arg_mostpop=opt.mostpop,
         arg_reduce=opt.reduce,
-        arg_model=opt.model)
+        arg_model=opt.model,
+        arg_logfile=opt.logfile)
 
 if __name__ == '__main__':
     main()
