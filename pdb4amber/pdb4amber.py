@@ -133,6 +133,49 @@ def find_gaps(parm):
 def find_incomplete(parm):
     return []
 
+def add_hydrogrens(obj):
+    ''' Use reduce program to add hydrogen
+
+    Parameters
+    ----------
+    obj: file object or parmed.Structure or its derived class
+
+    Returns
+    -------
+    parm : parmed.Structure
+    '''
+    try:
+        if hasattr(obj, 'write_pdb'):
+            # assume parmed.Structure
+            fileobj = StringIO()
+            obj.write_pdb(fileobj)
+            fileobj.seek(0)
+        else:
+            fileobj = obj
+            assert hasattr(fileobj, 'read')
+        reduce = os.path.join(os.getenv('AMBERHOME', ''), 'bin', 'reduce')
+        if not os.path.exists(reduce):
+            reduce = 'reduce'
+        process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-'], stdin=subprocess.PIPE,
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate(str.encode(fileobj.read()))
+        out = out.decode()
+        err = err.decode()
+        if process.wait():
+            logger.error("REDUCE returned non-zero exit status: "
+                           "See reduce_info.log for more details")
+            with open('reduce_info.log', 'w') as fh:
+                fh.write(err)
+        # print out the reduce log even if it worked
+        else:
+            open('reduce_info.log', 'w').write(err)
+        pdbh = StringIO(out)
+        # not using load_file since it does not read StringIO
+        parm = parmed.read_PDB(pdbh)
+    finally:
+        fileobj.close()
+    return parm
+    
 def _write_pdb_to_stringio(parm):
     '''
 
@@ -164,6 +207,7 @@ def run(arg_pdbout, arg_pdbin,
          logfile_handler = logging.StreamHandler(arg_logfile)
     else:
         raise ValueError("wrong arg_logfile: must be either string or file object")
+
     logger.addHandler(logfile_handler)
     name = arg_pdbin if not hasattr(arg_pdbin, '__name__') else arg_pdbin.__name__
     logger.info("\n==================================================")
@@ -196,29 +240,7 @@ def run(arg_pdbout, arg_pdbin,
                 pdb_fh = open(pdbin, 'r')
         else:
             pdb_fh = pdbin
-        try:
-            reduce = os.path.join(os.getenv('AMBERHOME', ''),
-                                  'bin', 'reduce')
-            if not os.path.exists(reduce):
-                reduce = 'reduce'
-            process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-'], stdin=subprocess.PIPE,
-                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = process.communicate(str.encode(pdb_fh.read()))
-            out = out.decode()
-            err = err.decode()
-            if process.wait():
-                logger.error("REDUCE returned non-zero exit status: "
-                               "See reduce_info.log for more details")
-                with open('reduce_info.log', 'w') as fh:
-                    fh.write(err)
-            # print out the reduce log even if it worked
-            else:
-                open('reduce_info.log', 'w').write(err)
-            pdbh = StringIO(out)
-            # not using load_file since it does not read StringIO
-            parm = parmed.read_PDB(pdbh)
-        finally:
-            pdb_fh.close()
+        parm = add_hydrogrens(pdb_fh)
     else:
         if isinstance(pdbin, parmed.Structure):
             parm = pdbin
