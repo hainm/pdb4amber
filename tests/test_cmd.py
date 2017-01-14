@@ -149,8 +149,7 @@ def test_simplest_command_pdb4amber_mypdb():
         parm = pmd.read_PDB(input_pdb)
         assert len(parm.atoms) == 574
 
-    # pdb4amber
-    # expect help
+def test_simplest_command_pdb4amber():
     command = ['pdb4amber']
     with tempfolder():
         output = subprocess.check_output(command).decode()
