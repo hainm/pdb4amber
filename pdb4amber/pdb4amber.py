@@ -198,7 +198,8 @@ def run(arg_pdbout, arg_pdbin,
         arg_reduce=False,
         arg_model=0,
         arg_elbow=False,
-        arg_logfile='pdb4amber.log'
+        arg_logfile='pdb4amber.log',
+        arg_keep_altlocs=False,
         ):
 
     if isinstance(arg_logfile, string_types):
@@ -295,13 +296,15 @@ def run(arg_pdbout, arg_pdbin,
     # make final output to new PDB file
     # =====================================================================
     parm.coordinates = parm.get_coordinates()[arg_model]
-    if arg_mostpop:
-        write_kwargs = dict(altlocs='occupancy')
-    else:
-        write_kwargs = dict(altlocs='first')
-    # remove altlocs label
-    for atom in parm.atoms:
-        atom.altloc = ''
+    write_kwargs = dict()
+    if not arg_keep_altlocs:
+        if arg_mostpop:
+            write_kwargs = dict(altlocs='occupancy')
+        else:
+            write_kwargs = dict(altlocs='first')
+        # remove altlocs label
+        for atom in parm.atoms:
+            atom.altloc = ''
     if arg_pdbout == 'stdout':
         output = StringIO()
         parm.write_pdb(output, **write_kwargs)
@@ -339,6 +342,8 @@ def main():
                       help="rename GLU,ASP,HIS for constant pH simulation")
     parser.add_argument("--most-populous", action="store_true", dest="mostpop",
                       help="keep most populous alt. conf. (default is to keep 'A')")
+    parser.add_argument("--keep-altlocs", action="store_true", dest="keep_altlocs",
+                      help="Keep alternative conformations")
     parser.add_argument("--reduce", action="store_true", dest="reduce",
                       help="Run Reduce first to add hydrogens.  (default: no)")
     parser.add_argument("--pdbid", action="store_true", dest="pdbid",
@@ -381,6 +386,7 @@ def main():
         arg_mostpop=opt.mostpop,
         arg_reduce=opt.reduce,
         arg_model=opt.model,
+        arg_keep_altlocs=opt.keep_altlocs,
         arg_logfile=logfile)
 
 if __name__ == '__main__':
