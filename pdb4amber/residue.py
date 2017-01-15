@@ -36,6 +36,15 @@
 
 __all__ = ['RESPROT', 'RESNA', 'RESSOLV', 'RESSUGAR', 'AMBER_SUPPORTED_RESNAMES']
 
+# TODO: nucleic acid
+# 
+HEAVY_ATOM_DICT = {'ALA':5,  'ARG':11, 'ASN':8,  'ASP':8,
+         'CYS':6,  'GLN':9,  'GLU':9,  'GLY':4,
+         'HIS':10, 'ILE':8,  'LEU':8,  'LYS':9,
+         'MET':8,  'PHE':11, 'PRO':7,  'SER':6,
+         'THR':7,  'TRP':14, 'TYR':12, 'VAL':7,
+         'HID':10, 'HIE':10, 'HIN':10, 'HIP':10,
+         'CYX':6,  'ASH':8,  'GLH':9,  'LYH':9}
 
 # Global constants
 RESPROT = ('ALA', 'ARG', 'ASN', 'ASP',

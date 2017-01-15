@@ -23,7 +23,8 @@ else:
 
 # TODO: include in ParmEd?
 from .residue import (RESPROT, RESNA, RESSOLV, 
-    RESSUGAR, AMBER_SUPPORTED_RESNAMES
+    RESSUGAR, AMBER_SUPPORTED_RESNAMES,
+    HEAVY_ATOM_DICT,
 )
 
 __version__ = '1.3'
@@ -55,6 +56,18 @@ def assign_his(parm):
                 residue.name = 'HIE'
     return parm
 
+def find_missing_heavy_atoms(parm, heavy_atom_dict=HEAVY_ATOM_DICT):
+    residue_collection = []
+    for residue in parm.residues:
+        if residue.name in heavy_atom_dict:
+            n_heavy_atoms = len(set(atom.name for atom in residue.atoms
+                                    if atom.atomic_number != 1))
+            n_missing = heavy_atom_dict[residue.name] - n_heavy_atoms
+            if n_missing > 0:
+                logger.warn('{}_{} misses {} heavy atom(s)'.format(
+                    residue.name, residue.idx+1, n_missing))
+                residue_collection.append(residue)
+    return residue_collection
 
 def constph(parm):
     """ Update AS4, GL4, HIP for constph.
@@ -188,6 +201,29 @@ def _write_pdb_to_stringio(parm):
     stringio_file.seek(0)
     return stringio_file
 
+def _summary(parm):
+    alt_residues = set()
+    chains = set()
+    for residue in parm.residues:
+        chains.add(residue.chain)
+        for atom in residue.atoms:
+            if atom.other_locations:
+                alt_residues.add(residue)
+    # chain
+    logger.info('\n----------Chains')
+    logger.info('The following (original) chains have been found:')
+    for chain_name in sorted(chains):
+        logger.info(chain_name)
+
+    # altlocs
+    logger.info('\n---------- Alternate Locations (Original Residues!))')
+    logger.info('\nThe following residues had alternate locations:')
+    if alt_residues:
+        for residue in sorted(alt_residues):
+            logger.info('{}_{}'.format(residue.name, residue.idx+1))
+    else:
+        logger.info('None')
+
 def run(arg_pdbout, arg_pdbin,
         arg_nohyd=False,
         arg_dry=False,
@@ -252,6 +288,8 @@ def run(arg_pdbout, arg_pdbin,
         else:
             parm = parmed.load_file(pdbin)
 
+    _summary(parm)
+
     # remove hydrogens if option -y is used:==============================
     if arg_nohyd:
         parm.strip('@H=')
@@ -298,9 +336,12 @@ def run(arg_pdbout, arg_pdbin,
     parm.coordinates = parm.get_coordinates()[arg_model]
     write_kwargs = dict()
     if not arg_keep_altlocs:
+        logger.info('The alternate coordinates have been discarded.')
         if arg_mostpop:
+            logger.info('Only the highest occupancy for each atom was kept.')
             write_kwargs = dict(altlocs='occupancy')
         else:
+            logger.info('Only the first occurrence for each atom was kept.')
             write_kwargs = dict(altlocs='first')
         # remove altlocs label
         for atom in parm.atoms:
