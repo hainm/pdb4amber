@@ -29,7 +29,7 @@ cat my.pdb | pdb4amber -o out.pdb
 pdb4amber my.pdb -o out.mol2
 
 # use `reduce` program to add hydgron
-pdb4amber my.podb --reduce -o out.pdb
+pdb4amber my.pdb --reduce -o out.pdb
 
 # process other formats (e.g: .cif')
 pdb4amber my.cif --reduce -o out.pdb
