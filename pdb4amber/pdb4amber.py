@@ -267,7 +267,7 @@ def _summary(parm):
     logger.info('\nThe following residues had alternate locations:')
     if alt_residues:
         for residue in sorted(alt_residues):
-            logger.info('{}_{}'.format(residue.name, residue.idx + 1))
+            logger.info('{}_{}'.format(residue.name, residue.number))
     else:
         logger.info('None')
 
@@ -286,6 +286,9 @@ def run(arg_pdbout, arg_pdbin,
         arg_keep_altlocs=False,
         ):
 
+    # always reset handlers to avoid duplication if run method is called more
+    # than once
+    logger.handlers = []
     if isinstance(arg_logfile, string_types):
         logfile_handler = logging.FileHandler(arg_logfile)
     elif hasattr(arg_logfile, 'write'):
