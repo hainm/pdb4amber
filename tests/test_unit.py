@@ -101,3 +101,9 @@ def test_run_with_filename_log():
                  arg_logfile=logfile)
          with open(logfile) as fh:
               assert 'Summary of pdb4amber' in fh.read()
+
+def test_find_gaps():
+    pdb_fh = get_fn('2igd/2igd.pdb')
+    parm = pmd.load_file(pdb_fh)
+    parm_gap = parm[':1,3']
+    assert pdb4amber.find_gaps(parm_gap) == [(4.134579301452567, 'MET', 1, 'PRO', 2)]
