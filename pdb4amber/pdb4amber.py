@@ -249,6 +249,8 @@ def _write_pdb_to_stringio(parm):
 
 
 def _summary(parm):
+    sumdict = dict(has_altlocs=False)
+
     alt_residues = set()
     chains = set()
     for residue in parm.residues:
@@ -266,10 +268,12 @@ def _summary(parm):
     logger.info('\n---------- Alternate Locations (Original Residues!))')
     logger.info('\nThe following residues had alternate locations:')
     if alt_residues:
+        sumdict['has_altlocs'] = True
         for residue in sorted(alt_residues):
             logger.info('{}_{}'.format(residue.name, residue.number))
     else:
         logger.info('None')
+    return sumdict
 
 
 def run(arg_pdbout, arg_pdbin,
@@ -339,7 +343,7 @@ def run(arg_pdbout, arg_pdbin,
         else:
             parm = parmed.load_file(pdbin)
 
-    _summary(parm)
+    sumdict = _summary(parm)
 
     # remove hydrogens if option -y is used:==============================
     if arg_nohyd:
@@ -387,14 +391,15 @@ def run(arg_pdbout, arg_pdbin,
     parm.coordinates = parm.get_coordinates()[arg_model]
     write_kwargs = dict()
     if not arg_keep_altlocs:
-        logger.info('The alternate coordinates have been discarded.')
-        if arg_mostpop:
-            logger.info('Only the highest occupancy for each atom was kept.')
-            write_kwargs = dict(altlocs='occupancy')
-        else:
-            logger.info('Only the first occurrence for each atom was kept.')
-            write_kwargs = dict(altlocs='first')
-        # remove altlocs label
+        if sumdict['has_altlocs']:
+            logger.info('The alternate coordinates have been discarded.')
+            if arg_mostpop:
+                logger.info('Only the highest occupancy for each atom was kept.')
+                write_kwargs = dict(altlocs='occupancy')
+            else:
+                logger.info('Only the first occurrence for each atom was kept.')
+                write_kwargs = dict(altlocs='first')
+            # remove altlocs label
         for atom in parm.atoms:
             atom.altloc = ''
     if arg_pdbout == 'stdout':
