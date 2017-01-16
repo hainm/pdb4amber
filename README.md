@@ -1,8 +1,11 @@
 [![Build Status](https://travis-ci.org/Amber-MD/pdb4amber.svg?branch=master)](https://travis-ci.org/Amber-MD/pdb4amber)
 [![Coverage Status](https://coveralls.io/repos/github/Amber-MD/pdb4amber/badge.png?branch=master)](https://coveralls.io/github/Amber-MD/pdb4amber?branch=master)
 
+
 Install
 -------
+Require [ParmEd](https://github.com/parmed/parmed)
+
 ```bash
 python setup.py install
 ```
