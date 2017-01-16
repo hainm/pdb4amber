@@ -35,6 +35,13 @@ def test_find_disulfide():
     one_cys_parm = parm[':CYS'][':1']
     assert not pdb4amber.find_disulfide(one_cys_parm)
 
+def test_find_missing_heavy_atoms():
+    fn = get_fn('2igd/2igd.pdb')
+    parm = pmd.load_file(fn)
+    parm2 = parm[':1-2&!@CB']
+    parm2.save("test.pdb", overwrite=True)
+    assert len(pdb4amber.find_missing_heavy_atoms(parm2)) == 2
+
 def test_strip_water():
     fn = get_fn('4lzt/4lzt_h.pdb')
     parm = pmd.load_file(fn)

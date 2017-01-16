@@ -179,6 +179,21 @@ def test_write_other_formats_like_mol2():
         with open(pdb_out) as fh:
             assert fh.read().startswith('@<TRIPOS>MOLECULE')
 
+def test_keep_altlocs():
+    ''' e.g: pdb4amber 2igd.pdb --keep-altlocs --reduce'''
+    pdb_fn = get_fn('2igd/2igd.pdb')
+    command = ['pdb4amber', pdb_fn, '--keep-altlocs', '--reduce']
+
+    with tempfolder():
+        output = subprocess.check_output(command).decode()
+        input_pdb = StringIO(output)
+        input_pdb.seek(0)
+        parm = pmd.read_PDB(input_pdb)
+        res4 = parm.residues[4]
+        for atom in res4.atoms:
+            if atom.name.startswith('CB') or atom.name.startswith('CG'):
+                assert atom.other_locations
+
 def test_increase_code_coverage_for_small_stuff():
     with pytest.raises(RuntimeError):
         pdb4amber.run('fake.pdb', 'fake.pdb')
