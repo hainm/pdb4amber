@@ -44,6 +44,11 @@ def test_find_missing_heavy_atoms():
     parm2.save("test.pdb", overwrite=True)
     pdbfixer = AmberPDBFixer(parm2)
     assert len(pdbfixer.find_missing_heavy_atoms()) == 2
+    assert 'CB' not in set(atom.name for atom in pdbfixer.parm.atoms)
+
+    pdbfixer.add_missing_atoms()
+    assert len(pdbfixer.find_missing_heavy_atoms()) == 0
+    assert 'CB' in set(atom.name for atom in pdbfixer.parm.atoms)
 
 def test_strip_water():
     fn = get_fn('4lzt/4lzt_h.pdb')
