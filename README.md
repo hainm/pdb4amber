@@ -59,4 +59,7 @@ cd $AMBERHOME
 git remote add pdb4amber_github https://github.com/amber-md/pdb4amber
 git fetch pdb4amber_github
 git pull -s recursive -X subtree=AmberTools/src/pdb4amber -X theirs --squash pdb4amber_github master
+
+# diff
+git diff pdb4amber_github/master master:AmberTools/src/pdb4amber/ --stat --color
 ```
