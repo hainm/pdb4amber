@@ -1,20 +1,13 @@
 #!/usr/bin/env python
+
 import os
 import sys
 import pdb4amber
 
-try:
-    if '--no-setuptools' in sys.argv:
-        sys.argv.remove('--no-setuptools')
-        raise ImportError() # Don't import setuptools...
-    from setuptools import setup
-    kws = dict(entry_points={
-        'console_scripts' : ['pdb4amber = pdb4amber.pdb4amber:main'],
-    })
-except ImportError:
-    from distutils.core import setup
-    kws = {'scripts' : [os.path.join('pdb4amber', 'pdb4amber'),]
-    }
+from setuptools import setup
+kws = dict(entry_points={
+    'console_scripts' : ['pdb4amber = pdb4amber.pdb4amber:main'],
+})
 
 setup(name='pdb4amber',
       version=pdb4amber.__version__,
