@@ -154,7 +154,8 @@ def find_disulfide(parm):
         for atom in residue.atoms:
             if 'SG' in atom.name:
                 for partner in atom.bond_partners:
-                    if partner.residue.name.startswith('CY') and partner.name.startswith('SG'):
+                    if (partner.residue.name.startswith('CY') and
+                        partner.name.startswith('SG')):
                         # use tuple for hashing
                         cys_cys_set.add(tuple(sorted((atom.residue.idx,
                                                       partner.residue.idx))))
@@ -184,10 +185,6 @@ def find_non_starndard_resnames(parm):
         if rname.strip() not in AMBER_SUPPORTED_RESNAMES:
             ns_names.add(rname)
     return ns_names
-
-
-def find_incomplete(parm):
-    return []
 
 
 def add_hydrogrens(obj):
@@ -382,7 +379,7 @@ def run(arg_pdbout, arg_pdbin,
     gaplist = find_gaps(parm)
 
     # count heavy atoms:==================================================
-    find_incomplete(parm)
+    find_missing_heavy_atoms(parm)
 
     # =====================================================================
     # make final output to new PDB file
