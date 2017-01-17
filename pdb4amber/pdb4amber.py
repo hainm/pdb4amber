@@ -27,6 +27,8 @@ from .residue import (RESPROT, AMBER_SUPPORTED_RESNAMES,
                       HEAVY_ATOM_DICT,
                       )
 
+from .utils import tempfolder
+
 __version__ = '1.3'
 
 
@@ -75,6 +77,21 @@ class AmberPDBFixer(object):
                         residue.name, residue.idx + 1, n_missing))
                     residue_collection.append(residue)
         return residue_collection
+
+    def add_missing_atoms(self):
+        in_pdb = 'in.pdb'
+        out_pdb = 'out.pdb'
+        with tempfolder():
+            self.write_pdb(in_pdb)
+            with open('leap.in', 'w') as fh:
+                fh.write('source leaprc.protein.ff14SB\n')
+                fh.write('source leaprc.dna.bsc1\n')
+                fh.write('x = loadpdb {}\n'.format(in_pdb))
+                fh.write('savepdb x {}\n'.format(out_pdb))
+                fh.write('quit')
+            subprocess.check_output('tleap -f leap.in', shell=True)
+            self.parm = parmed.load_file(out_pdb)
+        return self
     
     
     def constph(self):
@@ -290,6 +307,7 @@ def run(arg_pdbout, arg_pdbin,
         arg_mostpop=False,
         arg_reduce=False,
         arg_model=0,
+        arg_add_missing_atoms=False,
         arg_elbow=False,
         arg_logfile='pdb4amber.log',
         arg_keep_altlocs=False,
@@ -382,6 +400,9 @@ def run(arg_pdbout, arg_pdbin,
     # count heavy atoms:==================================================
     pdbfixer.find_missing_heavy_atoms()
 
+    if arg_add_missing_atoms:
+        pdbfixer.add_missing_atoms()
+
     # =====================================================================
     # make final output to new PDB file
     # =====================================================================
@@ -444,7 +465,7 @@ def main():
                         help="fetch structure with given pdbid, "
                         "should combined with -i option.\n"
                         "Subjected to change")
-    parser.add_argument("--tleap", action="store_true", dest="tleap",
+    parser.add_argument("--add-missing-atoms", action="store_true", dest="add_missing_atoms",
                         help="Use tleap to add missing atoms")
     parser.add_argument("--model", type=int, dest="model", default=0,
                         help="Model to use from a multi-model pdb file (integer).  (default: use all models)")
@@ -483,6 +504,7 @@ def main():
         arg_reduce=opt.reduce,
         arg_model=opt.model,
         arg_keep_altlocs=opt.keep_altlocs,
+        arg_add_missing_atoms=opt.add_missing_atoms,
         arg_logfile=logfile)
 
 if __name__ == '__main__':
