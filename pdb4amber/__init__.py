@@ -1,2 +1,2 @@
 from . import pdb4amber
-from .pdb4amber import assign_his, run, main, __version__
+from .pdb4amber import AmberPDBFixer, run, main, __version__

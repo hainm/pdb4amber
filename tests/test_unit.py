@@ -1,7 +1,6 @@
-import sys
 import subprocess
-from pdb4amber.pdb4amber import assign_his, constph, StringIO
-from pdb4amber import pdb4amber
+from pdb4amber.pdb4amber import StringIO
+from pdb4amber import AmberPDBFixer, run
 import parmed as pmd
 
 # local
@@ -13,34 +12,38 @@ def test_assign_his():
     his_residues = [res.name for res in parm.residues if res.name in {'HIS', 'HIE', 'HID', 'HIP'}]
     assert his_residues == ['HIS']
 
-    assign_his(parm)
-    his_residues = [res.name for res in parm.residues if res.name in {'HIS', 'HIE', 'HID', 'HIP'}]
+    pdbfixer = AmberPDBFixer(parm)
+    pdbfixer.assign_his()
+    his_residues = [res.name for res in pdbfixer.parm.residues if res.name in {'HIS', 'HIE', 'HID', 'HIP'}]
     assert his_residues == ['HID']
 
 def test_constph():
     fn = get_fn('4lzt/4lzt_h.pdb')
     parm = pmd.load_file(fn)
     resnames_before = set(res.name for res in parm.residues)
-
-    constph(parm)
-    resnames_after = set(res.name for res in parm.residues)
+    pdbfixer = AmberPDBFixer(parm)
+    pdbfixer.constph()
+    resnames_after = set(res.name for res in pdbfixer.parm.residues)
     assert sorted(resnames_after - resnames_before) == sorted({'HIP', 'AS4', 'GL4'})
 
 def test_find_disulfide():
     fn = get_fn('4lzt/4lzt_h.pdb')
     parm = pmd.load_file(fn)
-    cys_cys_set = pdb4amber.find_disulfide(parm)
+    pdbfixer = AmberPDBFixer(parm)
+    cys_cys_set = pdbfixer.find_disulfide()
     assert sorted(cys_cys_set) == [(5, 126), (29, 114), (63, 79), (75, 93)]
 
     one_cys_parm = parm[':CYS'][':1']
-    assert not pdb4amber.find_disulfide(one_cys_parm)
+    pdbfixer_2 = AmberPDBFixer(one_cys_parm)
+    assert not pdbfixer_2.find_disulfide()
 
 def test_find_missing_heavy_atoms():
     fn = get_fn('2igd/2igd.pdb')
     parm = pmd.load_file(fn)
     parm2 = parm[':1-2&!@CB']
     parm2.save("test.pdb", overwrite=True)
-    assert len(pdb4amber.find_missing_heavy_atoms(parm2)) == 2
+    pdbfixer = AmberPDBFixer(parm2)
+    assert len(pdbfixer.find_missing_heavy_atoms()) == 2
 
 def test_strip_water():
     fn = get_fn('4lzt/4lzt_h.pdb')
@@ -51,15 +54,16 @@ def test_strip_water():
     parm.strip(water_mask)
     assert 'HOH' not in set(res.name for res in parm.residues)
 
-def test_find_non_starndard_resnames():
+def test_find_non_standard_resnames():
     fn = get_fn('4lzt/4lzt_h.pdb')
     parm = pmd.load_file(fn)
-    assert pdb4amber.find_non_starndard_resnames(parm) == {'NO3'}
+    pdbfixer = AmberPDBFixer(parm)
+    assert pdbfixer.find_non_starndard_resnames() == {'NO3'}
 
 def test_run_with_StringIO_log():
     stringio_file = StringIO()
     with tempfolder():
-         pdb4amber.run(arg_pdbout='out.pdb', arg_pdbin=get_fn('4lzt/4lzt_h.pdb'),
+         run(arg_pdbout='out.pdb', arg_pdbin=get_fn('4lzt/4lzt_h.pdb'),
             arg_logfile=stringio_file)
     stringio_file.seek(0)
     assert 'Summary of pdb4amber' in stringio_file.read()
@@ -67,7 +71,7 @@ def test_run_with_StringIO_log():
 def test_run_with_stderr_stdout_log():
     # dummy
     with tempfolder():
-         output = subprocess.check_call([
+         subprocess.check_call([
              'pdb4amber',
              get_fn('4lzt/4lzt_h.pdb'),
              '-o',
@@ -76,7 +80,7 @@ def test_run_with_stderr_stdout_log():
          ])
 
     with tempfolder():
-         output = subprocess.check_call([
+         subprocess.check_call([
              'pdb4amber',
              get_fn('4lzt/4lzt_h.pdb'),
              '-o',
@@ -85,19 +89,17 @@ def test_run_with_stderr_stdout_log():
          ])
 
 def test_run_with_filename_log():
-    stringio_file = StringIO()
-
     # default
     logfile = 'pdb4amber.log'
     with tempfolder():
-         pdb4amber.run(arg_pdbout='out.pdb', arg_pdbin=get_fn('4lzt/4lzt_h.pdb'))
+         run(arg_pdbout='out.pdb', arg_pdbin=get_fn('4lzt/4lzt_h.pdb'))
          with open(logfile) as fh:
               assert 'Summary of pdb4amber' in fh.read()
 
     # given name
     logfile = 'hello.log'
     with tempfolder():
-         pdb4amber.run(arg_pdbout='out.pdb', arg_pdbin=get_fn('4lzt/4lzt_h.pdb'),
+         run(arg_pdbout='out.pdb', arg_pdbin=get_fn('4lzt/4lzt_h.pdb'),
                  arg_logfile=logfile)
          with open(logfile) as fh:
               assert 'Summary of pdb4amber' in fh.read()
@@ -106,4 +108,5 @@ def test_find_gaps():
     pdb_fh = get_fn('2igd/2igd.pdb')
     parm = pmd.load_file(pdb_fh)
     parm_gap = parm[':1,3']
-    assert pdb4amber.find_gaps(parm_gap) == [(4.134579301452567, 'MET', 1, 'PRO', 2)]
+    pdbfixer = AmberPDBFixer(parm_gap)
+    assert pdbfixer.find_gaps() == [(4.134579301452567, 'MET', 1, 'PRO', 2)]
