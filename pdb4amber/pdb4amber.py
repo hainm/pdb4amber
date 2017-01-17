@@ -198,7 +198,7 @@ class AmberPDBFixer(object):
         '''
         try:
             fileobj = StringIO()
-            self.parm.write_pdb(fileobj)
+            self.write_pdb(fileobj)
             fileobj.seek(0)
             reduce = os.path.join(os.getenv('AMBERHOME', ''), 'bin', 'reduce')
             if not os.path.exists(reduce):
@@ -225,8 +225,18 @@ class AmberPDBFixer(object):
 
     def visualize(self):
         return self.parm.visualize()
+
+    def write_pdb(self, filename):
+        '''
+
+        Parameters
+        ----------
+        filename : str or file object
+        '''
+        self.parm.write_pdb(fileobj)
     
-    def _write_pdb_to_stringio(self, parm):
+    @classmethod
+    def _write_pdb_to_stringio(cls, parm):
         '''
     
         Parameters
