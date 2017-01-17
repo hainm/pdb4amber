@@ -233,7 +233,7 @@ class AmberPDBFixer(object):
         ----------
         filename : str or file object
         '''
-        self.parm.write_pdb(fileobj)
+        self.parm.write_pdb(filename)
     
     @classmethod
     def _write_pdb_to_stringio(cls, parm):
@@ -247,8 +247,12 @@ class AmberPDBFixer(object):
         parm.write_pdb(stringio_file)
         stringio_file.seek(0)
         return stringio_file
-    
-    
+
+    def remove_water(self):
+        water_mask = ':' + ','.join(parmed.residue.WATER_NAMES)
+        self.parm.strip(water_mask)
+        return self
+
     def _summary(self):
         sumdict = dict(has_altlocs=False)
     
@@ -361,9 +365,7 @@ def run(arg_pdbout, arg_pdbin,
 
     # remove water if -d option used:=====================================
     if arg_dry:
-        water_mask = ':' + ','.join(parmed.residue.WATER_NAMES)
-        pdbfixer.parm.strip(water_mask)
-
+        pdbfixer.remove_water()
     # find histidines that might have to be changed:=====================
     if arg_constph:
         pdbfixer.constph()
