@@ -34,7 +34,7 @@ pdb4amber my.pdb -o out.mol2
 # use `reduce` program to add hydgron
 pdb4amber my.pdb --reduce -o out.pdb
 
-# process other formats (e.g: .cif')
+# process other formats (e.g: .cif)
 pdb4amber my.cif --reduce -o out.pdb
 
 # fetch structure by its pdbid and process
@@ -49,4 +49,14 @@ Test
 ----
 ```bash
 py.test -vs .
+```
+
+Pull to amber repo
+------------------
+
+```bash
+cd $AMBERHOME
+git remote add pdb4amber_github https://github.com/amber-md/pdb4amber
+git fetch pdb4amber_github
+git pull -s recursive -X subtree=AmberTools/src/pdb4amber -X theirs --squash pdb4amber_github master
 ```
