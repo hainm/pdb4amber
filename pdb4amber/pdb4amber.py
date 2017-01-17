@@ -93,7 +93,6 @@ def constph(parm):
             pass
     return parm
 
-
 def find_gaps(parm):
     # TODO: doc
     # report original resnum?
