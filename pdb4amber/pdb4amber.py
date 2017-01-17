@@ -186,10 +186,6 @@ def find_non_starndard_resnames(parm):
     return ns_names
 
 
-def find_incomplete(parm):
-    return []
-
-
 def add_hydrogrens(obj):
     ''' Use reduce program to add hydrogen
 
@@ -382,7 +378,7 @@ def run(arg_pdbout, arg_pdbin,
     gaplist = find_gaps(parm)
 
     # count heavy atoms:==================================================
-    find_incomplete(parm)
+    find_missing_heavy_atoms(parm)
 
     # =====================================================================
     # make final output to new PDB file
