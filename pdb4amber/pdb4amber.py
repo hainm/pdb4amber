@@ -154,7 +154,8 @@ def find_disulfide(parm):
         for atom in residue.atoms:
             if 'SG' in atom.name:
                 for partner in atom.bond_partners:
-                    if partner.residue.name.startswith('CY') and partner.name.startswith('SG'):
+                    if (partner.residue.name.startswith('CY') and
+                        partner.name.startswith('SG')):
                         # use tuple for hashing
                         cys_cys_set.add(tuple(sorted((atom.residue.idx,
                                                       partner.residue.idx))))
