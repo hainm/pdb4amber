@@ -6,14 +6,14 @@ import parmed as pmd
 # local
 from utils import get_fn, tempfolder
 
-def test_assign_his():
+def test_assign_histidine():
     fn = get_fn('4lzt/4lzt_h.pdb')
     parm = pmd.load_file(fn)
     his_residues = [res.name for res in parm.residues if res.name in {'HIS', 'HIE', 'HID', 'HIP'}]
     assert his_residues == ['HIS']
 
     pdbfixer = AmberPDBFixer(parm)
-    pdbfixer.assign_his()
+    pdbfixer.assign_histidine()
     his_residues = [res.name for res in pdbfixer.parm.residues if res.name in {'HIS', 'HIE', 'HID', 'HIP'}]
     assert his_residues == ['HID']
 
