@@ -6,14 +6,14 @@ import parmed as pmd
 # local
 from utils import get_fn, tempfolder
 
-def test_assign_his():
+def test_assign_histidine():
     fn = get_fn('4lzt/4lzt_h.pdb')
     parm = pmd.load_file(fn)
     his_residues = [res.name for res in parm.residues if res.name in {'HIS', 'HIE', 'HID', 'HIP'}]
     assert his_residues == ['HIS']
 
     pdbfixer = AmberPDBFixer(parm)
-    pdbfixer.assign_his()
+    pdbfixer.assign_histidine()
     his_residues = [res.name for res in pdbfixer.parm.residues if res.name in {'HIS', 'HIE', 'HID', 'HIP'}]
     assert his_residues == ['HID']
 
@@ -115,3 +115,15 @@ def test_find_gaps():
     parm_gap = parm[':1,3']
     pdbfixer = AmberPDBFixer(parm_gap)
     assert pdbfixer.find_gaps() == [(4.134579301452567, 'MET', 1, 'PRO', 2)]
+
+def test_mutate():
+    pdb_fh = get_fn('ala3_alpha.pdb')
+    parm = pmd.load_file(pdb_fh)
+    assert set(res.name for res in parm.residues) == {'ALA'}
+
+    pdbfixer = AmberPDBFixer(parm)
+    pdbfixer.mutate([(1, 'ARG'),])
+    pdbfixer.add_missing_atoms()
+    assert [res.name for res in pdbfixer.parm.residues] == ['ALA', 'ARG', 'ALA']
+    assert ([atom.name for atom in pdbfixer.parm.residues[1] if atom.atomic_number==6] == 
+            ['CA', 'CB', 'CG', 'CD', 'CZ', 'C'])

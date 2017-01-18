@@ -40,9 +40,23 @@ class AmberPDBFixer(object):
     parm : parmed.Structure
     '''
     def __init__(self, parm):
-        self.parm = parm
+        self.parm = parm[:]
 
-    def assign_his(self):
+    def mutate(self, mask_list):
+        '''
+
+        Parameters
+        ----------
+        mask_list: List[Tuple[int, str]]
+            [(1, 'ARG'),]
+        '''
+        for (idx, resname) in mask_list:
+            self.parm.residues[idx].name = resname
+            excluded_mask = ':' + str(idx+1) + '&!@C,CA,N,O,H'
+            self.parm.strip(excluded_mask)
+        return self
+
+    def assign_histidine(self):
         ''' Assign correct name for Histidine based on the atom name
     
         Returns
@@ -388,7 +402,7 @@ def run(arg_pdbout, arg_pdbin,
     if arg_constph:
         pdbfixer.constph()
     else:
-        pdbfixer.assign_his()
+        pdbfixer.assign_histidine()
 
     # find possible S-S in the final protein:=============================
     sslist = pdbfixer.find_disulfide()
