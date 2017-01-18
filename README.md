@@ -4,7 +4,9 @@
 
 Install
 -------
-Require [ParmEd](https://github.com/parmed/parmed)
+- Require 
+    - [ParmEd](https://github.com/parmed/parmed)
+    - tleap (optional)
 
 ```bash
 python setup.py install
