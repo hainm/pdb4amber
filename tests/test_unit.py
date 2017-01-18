@@ -127,3 +127,13 @@ def test_mutate():
     assert [res.name for res in pdbfixer.parm.residues] == ['ALA', 'ARG', 'ALA']
     assert ([atom.name for atom in pdbfixer.parm.residues[1] if atom.atomic_number==6] == 
             ['CA', 'CB', 'CG', 'CD', 'CZ', 'C'])
+
+def test_packmol():
+    pdb_fh = get_fn('2igd/2igd.pdb')
+    parm = pmd.load_file(pdb_fh)
+    water = parm[':HOH'][':1']
+    parm.strip(':HOH')
+    pdbfixer = AmberPDBFixer(parm)
+    assert len([res.name for res in pdbfixer.parm.residues if res.name.startswith('HOH')]) == 0
+    pdbfixer.pack(water, n_copies=100)
+    assert len([res.name for res in pdbfixer.parm.residues if res.name.startswith('HOH')]) == 100

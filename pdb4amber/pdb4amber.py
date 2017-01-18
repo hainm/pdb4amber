@@ -27,7 +27,7 @@ from .residue import (RESPROT, AMBER_SUPPORTED_RESNAMES,
                       HEAVY_ATOM_DICT,
                       )
 
-from .utils import tempfolder
+from .utils import tempfolder, amberbin
 
 __version__ = '1.3'
 
@@ -54,6 +54,45 @@ class AmberPDBFixer(object):
             self.parm.residues[idx].name = resname
             excluded_mask = ':' + str(idx+1) + '&!@C,CA,N,O,H'
             self.parm.strip(excluded_mask)
+        return self
+
+    def pack(self, mol, n_copies, ig=8888, grid_spacing=0.2):
+        ''' add n_copies of mol to AmberPDBFixer
+
+        Parameters
+        ----------
+        mol : parmed.Structure
+        n_copies : number of `mol`
+        ig : int
+            randome seed
+        grid_spacing : float
+
+        Requires
+        --------
+        AddToBox program
+        '''
+        add_to_box_exe = amberbin('AddToBox') or 'AddToBox'
+        input_pdb = 'input.pdb'
+        mol_pdb = 'mol.pdb'
+        out_pdb = 'out.pdb'
+
+        with tempfolder():
+            mol.save(mol_pdb, overwrite=True)
+            self.parm.save(input_pdb, overwrite=True)
+            command = [
+                add_to_box_exe,
+                '-c', input_pdb,
+                '-a', mol_pdb,
+                '-na', str(n_copies),
+                '-IG', str(ig),
+                '-G', str(grid_spacing),
+                '-o', out_pdb
+            ]
+            try:
+                subprocess.check_output(command, stderr=subprocess.STDOUT)
+            except subprocess.CalledProcessError as e:
+                raise RuntimeError(e.output.decode())
+            self.parm = parmed.load_file(out_pdb)
         return self
 
     def assign_histidine(self):
