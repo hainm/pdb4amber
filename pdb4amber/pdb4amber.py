@@ -42,6 +42,18 @@ class AmberPDBFixer(object):
     def __init__(self, parm):
         self.parm = parm
 
+    def mutate(self, mask_list):
+        '''
+
+        Parameters
+        ----------
+        mask_list: List[Tuple[int, str]]
+            [(3, 'GLY'),]
+        '''
+        for (idx, resname) in list_str:
+            self.parm.residues[idx-1].name = resname
+            self.parm.strip(':' + str(idx) + '&!@C,CA,N,O,H')
+
     def assign_his(self):
         ''' Assign correct name for Histidine based on the atom name
     
