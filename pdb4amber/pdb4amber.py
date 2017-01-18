@@ -40,7 +40,7 @@ class AmberPDBFixer(object):
     parm : parmed.Structure
     '''
     def __init__(self, parm):
-        self.parm = parm
+        self.parm = parm[:]
 
     def mutate(self, mask_list):
         '''
@@ -48,12 +48,11 @@ class AmberPDBFixer(object):
         Parameters
         ----------
         mask_list: List[Tuple[int, str]]
-            [(3, 'GLY'),]
+            [(1, 'ARG'),]
         '''
         for (idx, resname) in mask_list:
-            self.parm.residues[idx-1].name = resname
-            excluded_mask = ':' + str(idx) + '&!@C,CA,N,O,H'
-            print(excluded_mask)
+            self.parm.residues[idx].name = resname
+            excluded_mask = ':' + str(idx+1) + '&!@C,CA,N,O,H'
             self.parm.strip(excluded_mask)
         return self
 
