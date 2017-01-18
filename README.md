@@ -39,6 +39,9 @@ pdb4amber my.pdb --reduce -o out.pdb
 # process other formats (e.g: .cif)
 pdb4amber my.cif --reduce -o out.pdb
 
+# process from URL
+pdb4amber https://raw.githubusercontent.com/ParmEd/ParmEd/master/test/files/4LZT.cif -o out.pdb
+
 # fetch structure by its pdbid and process
 pdb4amber 1tsu --pdbid --reduce -o out.pdb
 
