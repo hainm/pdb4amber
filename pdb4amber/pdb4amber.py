@@ -40,7 +40,10 @@ class AmberPDBFixer(object):
     parm : parmed.Structure
     '''
     def __init__(self, parm):
-        self.parm = parm[:]
+        # TODO: make a copy?
+        # Why not now? parm[:] will not correctly assign TER residue
+        # self.parm = parm[:]
+        self.parm = parm
 
     def mutate(self, mask_list):
         '''
@@ -168,6 +171,7 @@ class AmberPDBFixer(object):
     def find_gaps(self):
         # TODO: doc
         # report original resnum?
+        CA_atoms = []
         C_atoms = []
         N_atoms = []
         gaplist = []
@@ -175,16 +179,19 @@ class AmberPDBFixer(object):
     
         #  N.B.: following only finds gaps in protein chains!
         for i, atom in enumerate(parm.atoms):
+            if atom.name in ['CA', 'CH3'] and atom.residue.name in RESPROT:
+                CA_atoms.append(i)
             if atom.name == 'C' and atom.residue.name in RESPROT:
                 C_atoms.append(i)
             if atom.name == 'N' and atom.residue.name in RESPROT:
                 N_atoms.append(i)
     
-        nca = len(C_atoms)
+        nca = len(CA_atoms)
         ngaps = 0
     
         for i in range(nca - 1):
-            if parm.atoms[C_atoms[i]].residue.ter:
+            is_ter = parm.atoms[CA_atoms[i]].residue.ter
+            if is_ter:
                 continue
             # Changed here to look at the C-N peptide bond distance:
             C_atom = parm.atoms[C_atoms[i]]
@@ -408,6 +415,7 @@ def run(arg_pdbout, arg_pdbin,
         parm = parmed.load_file(pdbin)
 
     pdbfixer = AmberPDBFixer(parm)
+
     if arg_reduce:
         pdbfixer.add_hydrogen()
 
@@ -433,7 +441,6 @@ def run(arg_pdbout, arg_pdbin,
     # keep only protein:==================================================
     if arg_prot:
         pdbfixer.parm.strip('!:' + ','.join(RESPROT))
-
     # remove water if -d option used:=====================================
     if arg_dry:
         pdbfixer.remove_water()
