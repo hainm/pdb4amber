@@ -116,6 +116,12 @@ def test_find_gaps():
     pdbfixer = AmberPDBFixer(parm_gap)
     assert pdbfixer.find_gaps() == [(4.134579301452567, 'MET', 1, 'PRO', 2)]
 
+def test_find_gaps_nogap():
+    pdb_fh = get_fn('2igd/2igd_4tleap_uc.pdb')
+    parm = pmd.load_file(pdb_fh)
+    pdbfixer = AmberPDBFixer(parm)
+    assert not pdbfixer.find_gaps()
+
 def test_mutate():
     pdb_fh = get_fn('ala3_alpha.pdb')
     parm = pmd.load_file(pdb_fh)
