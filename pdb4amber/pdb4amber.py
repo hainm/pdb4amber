@@ -460,7 +460,7 @@ def run(arg_pdbout, arg_pdbin,
     pdbfixer.rename_cys_to_cyx(sslist)
     with open(base_filename + '_sslink', 'w') as fh:
         for (idx0, idx1) in sslist:
-            fh.write('{} {}\n'.format(idx0, idx1))
+            fh.write('{} {}\n'.format(idx0+1, idx1+1))
 
     # find possible gaps:==================================================
     gaplist = pdbfixer.find_gaps()

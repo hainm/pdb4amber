@@ -39,7 +39,7 @@ def test_write_sslink():
     pdb_fn = get_fn('4lzt/4lzt_h.pdb')
     command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out]
     sslink_name = 'out_sslink'
-    sslink_pair = [(5, 126), (29, 114), (63, 79), (75, 93)]
+    sslink_pair = [(6, 127), (30, 115), (64, 80), (76, 94)]
 
     with tempfolder():
         subprocess.check_call(command)
