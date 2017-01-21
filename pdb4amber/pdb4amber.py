@@ -474,8 +474,9 @@ def run(arg_pdbout, arg_pdbin,
     # =====================================================================
     # make final output to new PDB file
     # =====================================================================
-    if arg_model > 0:
+    if arg_model >= 0:
         pdbfixer.parm.coordinates = pdbfixer.parm.get_coordinates()[arg_model]
+
     write_kwargs = dict()
     if not arg_keep_altlocs:
         if sumdict['has_altlocs']:
