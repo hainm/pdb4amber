@@ -539,9 +539,14 @@ def main():
                         help="Model to use from a multi-model pdb file (integer).  (default: use all models)")
     parser.add_argument("-l", "--logfile", metavar="FILE", dest="logfile",
                         help="log filename", default='stderr')
+    parser.add_argument("-v", "--version", action="store_true", dest="version",
+                        help="version")
     opt = parser.parse_args()
 
     # pdbin : {str, file object, parmed.Structure}
+    if opt.version:
+        print(__version__)
+        sys.exit()
     if opt.input is not None:
         pdbin = opt.input
     else:
