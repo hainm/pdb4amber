@@ -1,6 +1,7 @@
 import os
 import subprocess
 import parmed as pmd
+import numpy as np
 from parmed.residue import WATER_NAMES
 import pytest
 try:
@@ -29,7 +30,25 @@ def test_dry():
         resnames = set(res.name for res in parm.residues)
         assert not resnames.intersection(WATER_NAMES)
 
-def test_onstantph():
+        # water
+        water_parm = pmd.load_file('out_water.pdb')
+        assert set(res.name for res in water_parm.residues) == {'HOH'}
+
+def test_write_sslink():
+    pdb_out = 'out.pdb'
+    pdb_fn = get_fn('4lzt/4lzt_h.pdb')
+    command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out]
+    sslink_name = 'out_sslink'
+    sslink_pair = [(5, 126), (29, 114), (63, 79), (75, 93)]
+
+    with tempfolder():
+        subprocess.check_call(command)
+        with open(sslink_name) as fh:
+            for index, line in enumerate(fh):
+                id0, idx1 = [int(i) for i in line.split()]
+                assert (id0, idx1)== sslink_pair[index]
+
+def test_constantph():
     option = '--constantph'
     pdb_out = 'out.pdb'
     command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out, option] 
