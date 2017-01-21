@@ -538,7 +538,7 @@ def main():
     parser.add_argument("--model", type=int, dest="model", default=0,
                         help="Model to use from a multi-model pdb file (integer).  (default: use all models)")
     parser.add_argument("-l", "--logfile", metavar="FILE", dest="logfile",
-                        help="log filename", default='pdb4amber.log')
+                        help="log filename", default='stderr')
     opt = parser.parse_args()
 
     # pdbin : {str, file object, parmed.Structure}
