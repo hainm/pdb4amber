@@ -326,9 +326,12 @@ class AmberPDBFixer(object):
         return stringio_file
 
     def remove_water(self):
+        ''' Remove waters and return new `parm` with only waters
+        '''
         water_mask = ':' + ','.join(parmed.residue.WATER_NAMES)
+        water_parm = self.parm[water_mask]
         self.parm.strip(water_mask)
-        return self
+        return water_parm
 
     def _summary(self):
         sumdict = dict(has_altlocs=False)
@@ -395,7 +398,7 @@ def run(arg_pdbout, arg_pdbin,
         raise RuntimeError(
             "The input and output file names cannot be the same!\n")
 
-    filename, extension = os.path.splitext(arg_pdbout)
+    base_filename, extension = os.path.splitext(arg_pdbout)
     if arg_pdbin == 'stdin':
         if PY3:
             pdbin = StringIO(sys.stdin.read())
@@ -433,7 +436,7 @@ def run(arg_pdbout, arg_pdbin,
 
     ns_mask = ':' + ','.join(ns_names)
     if ns_mask != ':':
-        pdbfixer.parm[ns_mask].save(filename + '_nonprot.pdb', overwrite=True)
+        pdbfixer.parm[ns_mask].save(base_filename+ '_nonprot.pdb', overwrite=True)
 
     # if arg_elbow:
     #     ns_names = find_non_starndard_resnames_elbow(parm)
@@ -443,7 +446,9 @@ def run(arg_pdbout, arg_pdbin,
         pdbfixer.parm.strip('!:' + ','.join(RESPROT))
     # remove water if -d option used:=====================================
     if arg_dry:
-        pdbfixer.remove_water()
+        water_parm = pdbfixer.remove_water()
+        water_parm.save('{}_water.pdb'.format(base_filename),
+                        overwrite=True)
     # find histidines that might have to be changed:=====================
     if arg_constph:
         pdbfixer.constph()
@@ -453,6 +458,9 @@ def run(arg_pdbout, arg_pdbin,
     # find possible S-S in the final protein:=============================
     sslist = pdbfixer.find_disulfide()
     pdbfixer.rename_cys_to_cyx(sslist)
+    with open(base_filename + '_sslink', 'w') as fh:
+        for (idx0, idx1) in sslist:
+            fh.write('{} {}\n'.format(idx0+1, idx1+1))
 
     # find possible gaps:==================================================
     gaplist = pdbfixer.find_gaps()
@@ -466,7 +474,9 @@ def run(arg_pdbout, arg_pdbin,
     # =====================================================================
     # make final output to new PDB file
     # =====================================================================
-    pdbfixer.parm.coordinates = pdbfixer.parm.get_coordinates()[arg_model]
+    if arg_model >= 0:
+        pdbfixer.parm.coordinates = pdbfixer.parm.get_coordinates()[arg_model]
+
     write_kwargs = dict()
     if not arg_keep_altlocs:
         if sumdict['has_altlocs']:
@@ -527,13 +537,18 @@ def main():
                         "Subjected to change")
     parser.add_argument("--add-missing-atoms", action="store_true", dest="add_missing_atoms",
                         help="Use tleap to add missing atoms")
-    parser.add_argument("--model", type=int, dest="model", default=0,
+    parser.add_argument("--model", type=int, dest="model", default=-1,
                         help="Model to use from a multi-model pdb file (integer).  (default: use all models)")
     parser.add_argument("-l", "--logfile", metavar="FILE", dest="logfile",
-                        help="log filename", default='pdb4amber.log')
+                        help="log filename", default='stderr')
+    parser.add_argument("-v", "--version", action="store_true", dest="version",
+                        help="version")
     opt = parser.parse_args()
 
     # pdbin : {str, file object, parmed.Structure}
+    if opt.version:
+        print(__version__)
+        sys.exit()
     if opt.input is not None:
         pdbin = opt.input
     else:
