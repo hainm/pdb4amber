@@ -11,6 +11,7 @@ kws = dict(entry_points={
 
 setup(name='pdb4amber',
       version=pdb4amber.__version__,
+      zip_safe=False,
       description='PDB analyzer to prepare PDB files for Amber simulations.',
       author='Romain M. Wolf and AMBER developers',
       author_email='amber@ambermd.org',
