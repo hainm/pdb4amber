@@ -474,7 +474,8 @@ def run(arg_pdbout, arg_pdbin,
     # =====================================================================
     # make final output to new PDB file
     # =====================================================================
-    pdbfixer.parm.coordinates = pdbfixer.parm.get_coordinates()[arg_model]
+    if arg_model > 0:
+        pdbfixer.parm.coordinates = pdbfixer.parm.get_coordinates()[arg_model]
     write_kwargs = dict()
     if not arg_keep_altlocs:
         if sumdict['has_altlocs']:
@@ -535,7 +536,7 @@ def main():
                         "Subjected to change")
     parser.add_argument("--add-missing-atoms", action="store_true", dest="add_missing_atoms",
                         help="Use tleap to add missing atoms")
-    parser.add_argument("--model", type=int, dest="model", default=0,
+    parser.add_argument("--model", type=int, dest="model", default=-1,
                         help="Model to use from a multi-model pdb file (integer).  (default: use all models)")
     parser.add_argument("-l", "--logfile", metavar="FILE", dest="logfile",
                         help="log filename", default='stderr')
