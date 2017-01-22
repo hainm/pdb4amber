@@ -251,6 +251,29 @@ def test_write_other_formats_like_mol2():
         with open(pdb_out) as fh:
             assert fh.read().startswith('@<TRIPOS>MOLECULE')
 
+def test_mutation():
+    # mol2
+    pdb_fn = get_fn('2igd/2igd.pdb')
+    pdb_out = 'out.pdb'
+
+    # no whitespace
+    command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out,
+            '-m', '1-ALA,2-ALA,3-ALA'] 
+
+    with tempfolder():
+        subprocess.check_call(command)
+        parm = pmd.load_file(pdb_out)
+        assert set(res.name for res in parm.residues[:3]) == {"ALA"}
+
+    # with whitespace
+    command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out,
+            '-m', '1-ALA, 2-ALA, 3-ALA'] 
+
+    with tempfolder():
+        subprocess.check_call(command)
+        parm = pmd.load_file(pdb_out)
+        assert set(res.name for res in parm.residues[:3]) == {"ALA"}
+
 def test_keep_altlocs():
     ''' e.g: pdb4amber 2igd.pdb --keep-altlocs --reduce'''
     pdb_fn = get_fn('2igd/2igd.pdb')
