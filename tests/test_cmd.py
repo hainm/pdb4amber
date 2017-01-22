@@ -149,6 +149,16 @@ def test_reduce_with_pdb_input():
         atom_names = set(atom.name for atom in parm.atoms if atom.atomic_number == 1)
         assert atom_names
 
+def test_strip_atoms():
+    pdb_fn = get_fn('2igd/2igd.cif')
+    pdb_out = 'out.pdb'
+    command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out,
+            '--strip', ':3-500'] 
+    with tempfolder():
+        subprocess.check_call(command)
+        parm = pmd.load_file(pdb_out)
+        assert len(parm.residues) == 2
+
 def test_reduce_with_cif_input():
     option = '--reduce'
     pdb_fn = get_fn('2igd/2igd.cif')

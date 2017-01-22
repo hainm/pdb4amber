@@ -375,6 +375,7 @@ def run(arg_pdbout, arg_pdbin,
         arg_nohyd=False,
         arg_dry=False,
         arg_prot=False,
+        arg_strip_atom_mask=None,
         arg_noter=False,
         arg_constph=False,
         arg_mostpop=False,
@@ -460,6 +461,11 @@ def run(arg_pdbout, arg_pdbin,
     # keep only protein:==================================================
     if arg_prot:
         pdbfixer.parm.strip('!:' + ','.join(RESPROT))
+
+    # strip atoms with given mask    =====================================
+    if arg_strip_atom_mask is not None:
+        pdbfixer.parm.strip(arg_strip_atom_mask)
+
     # remove water if -d option used:=====================================
     if arg_dry:
         water_parm = pdbfixer.remove_water()
@@ -535,6 +541,8 @@ def main():
                         help="remove all hydrogen atoms           (default: no)")
     parser.add_argument("-d", "--dry", action="store_true", dest="dry",
                         help="remove all water molecules          (default: no)")
+    parser.add_argument("-s", "--strip", dest="strip_atom_mask", default=None,
+                        help="Strip given atom mask,              (default: no)")
     parser.add_argument("-p", "--prot", action="store_true", dest="prot",
                         help="keep only Amber-compatible residues (default: no)")
     parser.add_argument("--noter", action="store_true", dest="noter",
@@ -588,6 +596,7 @@ def main():
         arg_pdbin=pdbin,
         arg_nohyd=opt.nohyd,
         arg_dry=opt.dry,
+        arg_strip_atom_mask=opt.strip_atom_mask,
         arg_prot=opt.prot,
         arg_noter=opt.noter,
         arg_constph=opt.constantph,
