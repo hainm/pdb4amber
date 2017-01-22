@@ -493,7 +493,7 @@ def run(arg_pdbout, arg_pdbin,
         # e.g: arg_mutate_str = "3-ALA,4-GLU"
         for mask_str in arg_mutate_string.replace(';', ',').split(','):
             index, resname = mask_str.split('-')
-            mask_str_list.append([int(index)-1, resname])
+            mask_str_list.append([int(index.strip())-1, resname.strip()])
         pdbfixer.mutate(mask_str_list)
 
         # mutation will remove all hydrogens
