@@ -376,6 +376,7 @@ def run(arg_pdbout, arg_pdbin,
         arg_dry=False,
         arg_prot=False,
         arg_strip_atom_mask=None,
+        arg_mutate_string=None,
         arg_noter=False,
         arg_constph=False,
         arg_mostpop=False,
@@ -487,6 +488,19 @@ def run(arg_pdbout, arg_pdbin,
     # find possible gaps:==================================================
     gaplist = pdbfixer.find_gaps()
 
+    mask_str_list = []
+    if arg_mutate_string is not None:
+        # e.g: arg_mutate_str = "3-ALA,4-GLU"
+        for mask_str in arg_mutate_string.replace(';', ',').split(','):
+            index, resname = mask_str.split('-')
+            mask_str_list.append([int(index)-1, resname])
+        pdbfixer.mutate(mask_str_list)
+
+        # mutation will remove all hydrogens
+        # add back if using reduce
+        if arg_reduce:
+            pdbfixer.add_hydrogen()
+
     # count heavy atoms:==================================================
     pdbfixer.find_missing_heavy_atoms()
 
@@ -543,6 +557,8 @@ def main():
                         help="remove all water molecules          (default: no)")
     parser.add_argument("-s", "--strip", dest="strip_atom_mask", default=None,
                         help="Strip given atom mask,              (default: no)")
+    parser.add_argument("-m", "--mutate", dest="mutation_string", default=None,
+                        help="Mutate residue")
     parser.add_argument("-p", "--prot", action="store_true", dest="prot",
                         help="keep only Amber-compatible residues (default: no)")
     parser.add_argument("--noter", action="store_true", dest="noter",
@@ -597,6 +613,7 @@ def main():
         arg_nohyd=opt.nohyd,
         arg_dry=opt.dry,
         arg_strip_atom_mask=opt.strip_atom_mask,
+        arg_mutate_string=opt.mutation_string,
         arg_prot=opt.prot,
         arg_noter=opt.noter,
         arg_constph=opt.constantph,
