@@ -118,6 +118,21 @@ def test_prot_only():
         assert 'NO3' not in res_names
         assert 'HOH' not in res_names
 
+def test_writing_renum():
+    pdb_fn = get_fn('2igd/2igd_2_residues.pdb')
+    pdb_out = 'out.pdb'
+    command = ['pdb4amber', pdb_fn] 
+    expected_lines = """
+MET     1    MET     0
+PRO     3    PRO     1
+    """.strip().split('\n')
+
+    with tempfolder():
+        subprocess.check_call(command)
+        with open('stdout_renum.txt') as fh:
+            output_lines = [line.strip() for line in fh.readlines()]
+            assert expected_lines == output_lines
+
 def test_reduce_with_pdb_input():
     option = '--reduce'
     pdb_fn = get_fn('2igd/2igd.pdb')

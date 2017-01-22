@@ -312,6 +312,16 @@ class AmberPDBFixer(object):
         '''
         self.parm.write_pdb(filename)
     
+    def _write_renum(self, basename):
+        ''' write original and renumbered residue index
+        '''
+
+        with open(basename + '_renum.txt', 'w') as fh:
+            for residue in self.parm.residues:
+                fh.write("%3s %5s    %3s %5s\n" % 
+                        (residue.name, residue.number,
+                         residue.name, residue.idx))
+
     @classmethod
     def _write_pdb_to_stringio(cls, parm):
         '''
@@ -419,6 +429,8 @@ def run(arg_pdbout, arg_pdbin,
 
     pdbfixer = AmberPDBFixer(parm)
 
+    pdbfixer._write_renum(base_filename)
+
     if arg_reduce:
         pdbfixer.add_hydrogen()
 
@@ -435,8 +447,12 @@ def run(arg_pdbout, arg_pdbin,
     ns_names = pdbfixer.find_non_starndard_resnames()
 
     ns_mask = ':' + ','.join(ns_names)
+    ns_mask_filename = base_filename + '_nonprot.pdb'
     if ns_mask != ':':
-        pdbfixer.parm[ns_mask].save(base_filename+ '_nonprot.pdb', overwrite=True)
+        pdbfixer.parm[ns_mask].save(ns_mask_filename, overwrite=True)
+    else:
+        with open(ns_mask_filename, 'w') as fh:
+            fh.write("")
 
     # if arg_elbow:
     #     ns_names = find_non_starndard_resnames_elbow(parm)
