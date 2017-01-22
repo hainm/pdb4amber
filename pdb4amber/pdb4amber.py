@@ -377,7 +377,6 @@ def run(arg_pdbout, arg_pdbin,
         arg_prot=False,
         arg_strip_atom_mask=None,
         arg_mutate_string=None,
-        arg_noter=False,
         arg_constph=False,
         arg_mostpop=False,
         arg_reduce=False,
@@ -561,8 +560,6 @@ def main():
                         help="Mutate residue")
     parser.add_argument("-p", "--prot", action="store_true", dest="prot",
                         help="keep only Amber-compatible residues (default: no)")
-    parser.add_argument("--noter", action="store_true", dest="noter",
-                        help="remove TER, MODEL, ENDMDL cards     (default: no)")
     parser.add_argument("--constantph", action="store_true", dest="constantph",
                         help="rename GLU,ASP,HIS for constant pH simulation")
     parser.add_argument("--most-populous", action="store_true", dest="mostpop",
@@ -615,7 +612,6 @@ def main():
         arg_strip_atom_mask=opt.strip_atom_mask,
         arg_mutate_string=opt.mutation_string,
         arg_prot=opt.prot,
-        arg_noter=opt.noter,
         arg_constph=opt.constantph,
         arg_mostpop=opt.mostpop,
         arg_reduce=opt.reduce,
