@@ -265,7 +265,7 @@ def test_mutation():
         parm = pmd.load_file(pdb_out)
         assert set(res.name for res in parm.residues[:3]) == {"ALA"}
 
-    # without whitespace
+    # with whitespace
     command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out,
             '-m', '1-ALA, 2-ALA, 3-ALA'] 
 
