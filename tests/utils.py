@@ -1,4 +1,5 @@
 import os
+import subprocess
 from contextlib import contextmanager
 import tempfile
 from shutil import rmtree
@@ -21,3 +22,9 @@ def get_fn(basename):
                       basename)
   assert os.path.exists(fn), 'File must exists {}'.format(fn)
   return fn
+
+def _has_program(pname):
+    try:
+        subprocess.check_call(['which', pname])
+    except subprocess.CalledProcessError:
+        return False
