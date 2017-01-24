@@ -26,5 +26,10 @@ def get_fn(basename):
 def _has_program(pname):
     try:
         subprocess.check_call(['which', pname])
+        return True
     except subprocess.CalledProcessError:
         return False
+
+if __name__ == '__main__':
+    print('tleap', _has_program('tleap'))
+    print('AddToBox', _has_program('AddToBox'))
