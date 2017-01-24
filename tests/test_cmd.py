@@ -12,7 +12,7 @@ except ImportError:
 
 from pdb4amber import pdb4amber
 # local
-from utils import tempfolder, get_fn
+from utils import tempfolder, get_fn, _has_program
 
 pdb_fn = get_fn('4lzt/4lzt_h.pdb')
 
@@ -227,7 +227,6 @@ def test_simplest_command_pdb4amber():
         output = subprocess.check_output(command).decode()
         assert 'usage: pdb4amber' in output
 
-
 def test_stdin_stdout_with_reduce():
     ''' e.g: cat my.pdb | pdb4amber --reduce '''
     pdb_fn = get_fn('2igd/2igd.pdb')
@@ -251,6 +250,7 @@ def test_write_other_formats_like_mol2():
         with open(pdb_out) as fh:
             assert fh.read().startswith('@<TRIPOS>MOLECULE')
 
+@unittest.skipUnless(_has_program('tleap'), 'Must have tleap')
 def test_mutation():
     # mol2
     pdb_fn = get_fn('2igd/2igd.pdb')

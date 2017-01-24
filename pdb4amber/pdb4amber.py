@@ -116,8 +116,10 @@ class AmberPDBFixer(object):
                     residue.name = 'HIP'
                 elif 'HD1' in atom_name_set:
                     residue.name = 'HID'
-                else:
+                elif 'HE2' in atom_name_set:
                     residue.name = 'HIE'
+                else:
+                    residue.name = 'HIS'
         return self
     
     

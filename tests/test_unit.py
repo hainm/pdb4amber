@@ -1,10 +1,11 @@
+import unittest
 import subprocess
 from pdb4amber.pdb4amber import StringIO
 from pdb4amber import AmberPDBFixer, run
 import parmed as pmd
 
 # local
-from utils import get_fn, tempfolder
+from utils import get_fn, tempfolder, _has_program
 
 def test_assign_histidine():
     fn = get_fn('4lzt/4lzt_h.pdb')
@@ -45,10 +46,6 @@ def test_find_missing_heavy_atoms():
     pdbfixer = AmberPDBFixer(parm2)
     assert len(pdbfixer.find_missing_heavy_atoms()) == 2
     assert 'CB' not in set(atom.name for atom in pdbfixer.parm.atoms)
-
-    pdbfixer.add_missing_atoms()
-    assert len(pdbfixer.find_missing_heavy_atoms()) == 0
-    assert 'CB' in set(atom.name for atom in pdbfixer.parm.atoms)
 
 def test_strip_water():
     fn = get_fn('4lzt/4lzt_h.pdb')
@@ -122,6 +119,7 @@ def test_find_gaps_nogap():
     pdbfixer = AmberPDBFixer(parm)
     assert not pdbfixer.find_gaps()
 
+@unittest.skipUnless(_has_program('tleap'), "Must has tleap")
 def test_mutate():
     pdb_fh = get_fn('ala3_alpha.pdb')
     parm = pmd.load_file(pdb_fh)
@@ -134,6 +132,7 @@ def test_mutate():
     assert ([atom.name for atom in pdbfixer.parm.residues[1] if atom.atomic_number==6] == 
             ['CA', 'CB', 'CG', 'CD', 'CZ', 'C'])
 
+@unittest.skipUnless(_has_program('AddToBox'), "Must has AddToBox")
 def test_packmol():
     pdb_fh = get_fn('2igd/2igd.pdb')
     parm = pmd.load_file(pdb_fh)
