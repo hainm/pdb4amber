@@ -1713,4 +1713,10 @@ HETATM 1699  O   HOH A 284       8.315  20.399  27.434  1.00 24.88           O
 HETATM 1700  O   HOH A 285       5.803  20.922  28.430  1.00 30.29           O  
 HETATM 1701  O   HOH A 286      17.331  18.227  28.215  1.00 30.47           O  
 HETATM 1702  O   HOH A 287      17.388  20.916  27.945  1.00 29.88           O  
-END                                                                             
+CONECT   48 1007
+CONECT  185  298
+CONECT  811 1521
+CONECT  853 1327
+CONECT 1084 1190
+CONECT 1265 1422
+END
