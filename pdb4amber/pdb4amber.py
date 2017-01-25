@@ -524,9 +524,11 @@ def run(arg_pdbout, arg_pdbin,
             else:
                 logger.info('Only the first occurrence for each atom was kept.')
                 write_kwargs = dict(altlocs='first')
-            # remove altlocs label
+        # remove altlocs label
         for atom in pdbfixer.parm.atoms:
             atom.altloc = ''
+            for oatom in atom.other_locations.values():
+                oatom.altloc = ''
     if arg_pdbout == 'stdout':
         output = StringIO()
         pdbfixer.parm.write_pdb(output, **write_kwargs)
