@@ -121,7 +121,10 @@ class AmberPDBFixer(object):
                 else:
                     residue.name = 'HIS'
         return self
-    
+
+    def strip(self, mask):
+        self.parm.strip(mask)
+        return self
     
     def find_missing_heavy_atoms(self, heavy_atom_dict=HEAVY_ATOM_DICT):
         residue_collection = []
