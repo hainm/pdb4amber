@@ -285,7 +285,7 @@ class AmberPDBFixer(object):
             reduce = os.path.join(os.getenv('AMBERHOME', ''), 'bin', 'reduce')
             if not os.path.exists(reduce):
                 reduce = 'reduce'
-            process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-'], stdin=subprocess.PIPE,
+            process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-NOFLIP', '-'], stdin=subprocess.PIPE,
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = process.communicate(str.encode(fileobj.read()))
             out = out.decode()

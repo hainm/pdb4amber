@@ -195,6 +195,7 @@ def test_stdin_stdout():
         parm = pmd.read_PDB(input_pdb)
         assert len(parm.atoms) == 574
 
+@unittest.skipUnless(internet_ok, 'internet')
 def test_fetch_pdbid():
     ''' e.g: pdb4amber 1l2y --pdbid '''
     pdb_fn = '1l2y'
@@ -207,6 +208,7 @@ def test_fetch_pdbid():
         parm = pmd.read_PDB(input_pdb)
         assert len(parm.atoms) == 304
         
+@unittest.skipUnless(internet_ok, 'internet')
 def test_fetch_pdbid_and_use_reduce():
     ''' e.g: pdb4amber 1tsu --pdbid --reduce'''
     pdb_fn = '1tsu'
