@@ -31,12 +31,12 @@ def test_find_disulfide():
     fn = get_fn('4lzt/4lzt_h.pdb')
     parm = pmd.load_file(fn)
     pdbfixer = AmberPDBFixer(parm)
-    cys_cys_set = pdbfixer.find_disulfide()
+    cys_cys_set, _ = pdbfixer.find_disulfide()
     assert sorted(cys_cys_set) == [(5, 126), (29, 114), (63, 79), (75, 93)]
 
     one_cys_parm = parm[':CYS'][':1']
     pdbfixer_2 = AmberPDBFixer(one_cys_parm)
-    assert not pdbfixer_2.find_disulfide()
+    assert not pdbfixer_2.find_disulfide()[0]
 
 def test_find_missing_heavy_atoms():
     fn = get_fn('2igd/2igd.pdb')

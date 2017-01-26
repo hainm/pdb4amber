@@ -225,9 +225,10 @@ class AmberPDBFixer(object):
         -------
         cys_cys_set : Set[List[int, int]]
         """
-        residues = [res for res in self.parm.residues if 'CYS' in res.name]
+        residues = [res for res in self.parm.residues if res.name in ['CYS', 'CYX']]
     
-        cys_cys_set = set()
+        cys_cys_resid_set = set()
+        cys_cys_atomidx_set = set()
         for residue in residues:
             for atom in residue.atoms:
                 if 'SG' in atom.name:
@@ -235,9 +236,11 @@ class AmberPDBFixer(object):
                         if (partner.residue.name.startswith('CY') and
                             partner.name.startswith('SG')):
                             # use tuple for hashing
-                            cys_cys_set.add(tuple(sorted((atom.residue.idx,
+                            cys_cys_resid_set.add(tuple(sorted((atom.residue.idx,
                                                           partner.residue.idx))))
-        return sorted(cys_cys_set)
+                            cys_cys_atomidx_set.add(tuple(sorted((atom.idx,
+                                                          partner.idx))))
+        return sorted(cys_cys_resid_set), sorted(cys_cys_atomidx_set)
     
     
     def rename_cys_to_cyx(self, cys_cys_set):
@@ -282,7 +285,7 @@ class AmberPDBFixer(object):
             reduce = os.path.join(os.getenv('AMBERHOME', ''), 'bin', 'reduce')
             if not os.path.exists(reduce):
                 reduce = 'reduce'
-            process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-'], stdin=subprocess.PIPE,
+            process = subprocess.Popen([reduce, '-BUILD', '-NUC', '-NOFLIP', '-'], stdin=subprocess.PIPE,
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = process.communicate(str.encode(fileobj.read()))
             out = out.decode()
@@ -324,17 +327,25 @@ class AmberPDBFixer(object):
                         (residue.name, residue.number,
                          residue.name, residue.idx))
 
-    @classmethod
-    def _write_pdb_to_stringio(cls, parm):
-        '''
-    
-        Parameters
-        ----------
-        parm : parmed.Structure or derived class
-        '''
+    def _write_pdb_to_stringio(self, cys_cys_atomidx_set=None,
+            disulfide_conect=True, **kwargs):
         stringio_file = StringIO()
-        parm.write_pdb(stringio_file)
+        stringio_file_out = StringIO()
+        self.parm.write_pdb(stringio_file, **kwargs)
         stringio_file.seek(0)
+        lines = stringio_file.readlines()
+
+        # TODO: update ParmEd?
+        if disulfide_conect:
+            conect_record = [
+                    'CONECT%5d%5d\n' % (idx0+1, idx1+1)
+                    for (idx0, idx1) in cys_cys_atomidx_set
+            ]
+            conect_str = ''.join(conect_record)
+            lines[-1] = conect_str + 'END\n'
+            stringio_file_out.writelines(lines)
+            stringio_file_out.seek(0)
+            stringio_file = stringio_file_out
         return stringio_file
 
     def remove_water(self):
@@ -480,7 +491,7 @@ def run(arg_pdbout, arg_pdbin,
         pdbfixer.assign_histidine()
 
     # find possible S-S in the final protein:=============================
-    sslist = pdbfixer.find_disulfide()
+    sslist, cys_cys_atomidx_set  = pdbfixer.find_disulfide()
     pdbfixer.rename_cys_to_cyx(sslist)
     with open(base_filename + '_sslink', 'w') as fh:
         for (idx0, idx1) in sslist:
@@ -529,18 +540,19 @@ def run(arg_pdbout, arg_pdbin,
             atom.altloc = ''
             for oatom in atom.other_locations.values():
                 oatom.altloc = ''
-    if arg_pdbout == 'stdout':
-        output = StringIO()
-        pdbfixer.parm.write_pdb(output, **write_kwargs)
+    if arg_pdbout in ['stdout', 'stderr'] or arg_pdbout.endswith('.pdb'):
+        output = pdbfixer._write_pdb_to_stringio(cys_cys_atomidx_set=cys_cys_atomidx_set,
+                disulfide_conect=True,
+                **write_kwargs)
         output.seek(0)
-        print(output.read())
+        if arg_pdbout in ['stdout', 'stderr']:
+             print(output.read())
+        else:
+            with open(arg_pdbout, 'w') as fh:
+                fh.write(output.read())
     else:
-        output = arg_pdbout
-        try:
-            pdbfixer.parm.save(output, overwrite=True, **write_kwargs)
-        except TypeError:
-            # mol2 does not accept altloc keyword
-            pdbfixer.parm.save(output, overwrite=True)
+        # mol2 does not accept altloc keyword
+        pdbfixer.parm.save(arg_pdbout, overwrite=True)
     return ns_names, gaplist, sslist
 
 
@@ -589,7 +601,6 @@ def main():
     # pdbin : {str, file object, parmed.Structure}
     if opt.version:
         print(__version__)
-        sys.exit()
     if opt.input is not None:
         pdbin = opt.input
     else:
@@ -619,7 +630,7 @@ def main():
         arg_constph=opt.constantph,
         arg_mostpop=opt.mostpop,
         arg_reduce=opt.reduce,
-        arg_model=opt.model,
+        arg_model=opt.model-1,
         arg_keep_altlocs=opt.keep_altlocs,
         arg_add_missing_atoms=opt.add_missing_atoms,
         arg_logfile=logfile)

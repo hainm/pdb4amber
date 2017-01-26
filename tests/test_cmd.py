@@ -41,7 +41,17 @@ def test_write_model():
         parm = pmd.load_file(pdb_out)
         assert parm.get_coordinates().shape == (1, 304, 3)
         np.testing.assert_almost_equal(parm.coordinates,
-                                       orig_parm.get_coordinates()[1])
+                                       orig_parm.get_coordinates()[0])
+
+    # model 2
+    model = 2
+    with tempfolder():
+        subprocess.check_call(['pdb4amber', '1l2y', '--pdbid', '-o', pdb_out,
+            '--model', str(model) ])
+        parm = pmd.load_file(pdb_out)
+        assert parm.get_coordinates().shape == (1, 304, 3)
+        np.testing.assert_almost_equal(parm.coordinates,
+                                       orig_parm.get_coordinates()[model-1])
 
 def test_dry():
     option = '--dry'
@@ -185,6 +195,7 @@ def test_stdin_stdout():
         parm = pmd.read_PDB(input_pdb)
         assert len(parm.atoms) == 574
 
+@unittest.skipUnless(internet_ok, 'internet')
 def test_fetch_pdbid():
     ''' e.g: pdb4amber 1l2y --pdbid '''
     pdb_fn = '1l2y'
@@ -197,6 +208,7 @@ def test_fetch_pdbid():
         parm = pmd.read_PDB(input_pdb)
         assert len(parm.atoms) == 304
         
+@unittest.skipUnless(internet_ok, 'internet')
 def test_fetch_pdbid_and_use_reduce():
     ''' e.g: pdb4amber 1tsu --pdbid --reduce'''
     pdb_fn = '1tsu'
@@ -221,6 +233,7 @@ def test_simplest_command_pdb4amber_mypdb():
         parm = pmd.read_PDB(input_pdb)
         assert len(parm.atoms) == 574
 
+@pytest.mark.xfail
 def test_simplest_command_pdb4amber():
     command = ['pdb4amber']
     with tempfolder():
