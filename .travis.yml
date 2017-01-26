@@ -23,7 +23,7 @@ before_install:
     - source devtools/ci/install_parmed.sh
 
 install:
-    - pip install . -v
+    - pip install . -v --upgrade # overwrite AmberTools
 
 script:
     - source devtools/ci/run_tests.sh
