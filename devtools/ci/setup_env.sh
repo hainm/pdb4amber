@@ -17,6 +17,7 @@ conda create -y -n myenv python=$PYTHON_VERSION
 # switch env
 source activate myenv
 conda install numpy nomkl -y
+conda install scipy -y
 conda install coverage -y 
 
 cat >$HOME/.amberrc <<EOF
