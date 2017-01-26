@@ -2,6 +2,7 @@ import subprocess
 import parmed
 
 def run_tleap(parm, ns_names, gaplist, sslist, forcefield_cmd=None):
+    # adapted from amber_adaptbx code in phenix
     '''
 
     Parameters
@@ -16,6 +17,8 @@ def run_tleap(parm, ns_names, gaplist, sslist, forcefield_cmd=None):
     input_pdb = 'x.pdb'
     prmtop = 'x.prmtop'
     rst7 = 'x.rst7'
+    # input PDB file
+    parm.write_pdb(input_pdb, altlocs='first')
 
     tleap_input_file = "leap.in"
     f = open(tleap_input_file, "w")
@@ -37,8 +40,6 @@ def run_tleap(parm, ns_names, gaplist, sslist, forcefield_cmd=None):
     f.write('set default PBRaddi mbondi3\n')
     f.write('set default nocenter on\n')
 
-    # input PDB file
-    parm.write_pdb(input_pdb, altlocs='first')
     f.write('x = loadpdb %s\n' % input_pdb)
 
     # box
@@ -50,6 +51,7 @@ def run_tleap(parm, ns_names, gaplist, sslist, forcefield_cmd=None):
     if gaplist:
         for d, res1, resid1, res2, resid2 in gaplist:
             f.write('deleteBond x.%d.C x.%d.N\n' % (resid1, resid2))
+
     #  process sslist
     if sslist:
         for resid1, resid2 in sslist:
