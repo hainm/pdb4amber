@@ -540,7 +540,7 @@ def run(arg_pdbout, arg_pdbin,
             atom.altloc = ''
             for oatom in atom.other_locations.values():
                 oatom.altloc = ''
-    try:
+    if arg_pdbout in ['stdout', 'stderr'] or arg_pdbout.endswith('.pdb'):
         output = pdbfixer._write_pdb_to_stringio(cys_cys_atomidx_set=cys_cys_atomidx_set,
                 disulfide_conect=True,
                 **write_kwargs)
@@ -550,9 +550,9 @@ def run(arg_pdbout, arg_pdbin,
         else:
             with open(arg_pdbout, 'w') as fh:
                 fh.write(output.read())
-    except TypeError:
+    else:
         # mol2 does not accept altloc keyword
-        pdbfixer.parm.save(output, overwrite=True)
+        pdbfixer.parm.save(arg_pdbout, overwrite=True)
     return ns_names, gaplist, sslist
 
 
