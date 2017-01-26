@@ -17,7 +17,7 @@ runtest pdb4amber -i 3ptb.pdb -o 3ptb_amber_dpy.pdb -dpy
 runtest pdb4amber -i 3ptb.pdb -o 3ptb_amber.pdb
 runtest pdb4amber -i 3ptb.pdb -o 3ptb_amber_ph.pdb --constantph 
 runtest pdb4amber -i 3ptb_H.pdb -o 3ptb_amber_H.pdb
-runtest cat 3ptb.pdb | bin/pdb4amber > 3ptb_amber_pipe.pdb 2>>error_output.txt
+runtest cat 3ptb.pdb | pdb4amber > 3ptb_amber_pipe.pdb 2>>error_output.txt
 runtest pdb4amber -i 4lzt.pdb -o 4lzt_amber_mostpop.pdb --most-populous -dpy 
 runtest pdb4amber -i 4lzt.pdb -o 4lzt_amber.pdb -dpy
 runtest pdb4amber -i HIStest.pdb -o HIStest_amber.pdb
