@@ -630,7 +630,7 @@ def main():
         arg_constph=opt.constantph,
         arg_mostpop=opt.mostpop,
         arg_reduce=opt.reduce,
-        arg_model=opt.model,
+        arg_model=opt.model-1,
         arg_keep_altlocs=opt.keep_altlocs,
         arg_add_missing_atoms=opt.add_missing_atoms,
         arg_logfile=logfile)
