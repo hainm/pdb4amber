@@ -35,7 +35,7 @@ def test_amberlite(command, pdb_in, pdb_out):
     with tempfolder():
         command = command.replace(pdb_in, pdb_in_abspath)
         subprocess.check_call(command, shell=True) 
-        if 'stdin' in pdb_out:
+        if 'reduce' in pdb_out:
             # e.g: pdb4amber --reduce < 3ptb.pdb > 3ptb_amber_reduce_stdin.pdb
             # Not sure why getting diff error for spacing, ack
             parm_out = pmd.load_file(pdb_out)
