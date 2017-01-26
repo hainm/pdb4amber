@@ -23,7 +23,9 @@ before_install:
     - source devtools/ci/install_parmed.sh
 
 install:
-    - pip install . -v --upgrade # overwrite AmberTools
+    # overwrite old packages in AmberTools
+    - pip install https://github.com/parmed/parmed --upgrade
+    - pip install . -v --upgrade
 
 script:
     - reduce -Version
