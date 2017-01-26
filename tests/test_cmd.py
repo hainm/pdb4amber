@@ -41,7 +41,17 @@ def test_write_model():
         parm = pmd.load_file(pdb_out)
         assert parm.get_coordinates().shape == (1, 304, 3)
         np.testing.assert_almost_equal(parm.coordinates,
-                                       orig_parm.get_coordinates()[1])
+                                       orig_parm.get_coordinates()[0])
+
+    # model 2
+    model = 2
+    with tempfolder():
+        subprocess.check_call(['pdb4amber', '1l2y', '--pdbid', '-o', pdb_out,
+            '--model', str(model) ])
+        parm = pmd.load_file(pdb_out)
+        assert parm.get_coordinates().shape == (1, 304, 3)
+        np.testing.assert_almost_equal(parm.coordinates,
+                                       orig_parm.get_coordinates()[model-1])
 
 def test_dry():
     option = '--dry'
