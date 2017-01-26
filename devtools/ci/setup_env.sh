@@ -27,7 +27,7 @@ State or Province = travis
 Country = travis
 EOF
 
-conda install ambertools -c hainm -y
+conda install ambertool=17 -c hainm/label/dev -y
 
 # pytest
 pip install pytest
