@@ -11,8 +11,6 @@ function runtest {
     return $status
 }
 
-/bin/rm -f error_output.txt
-
 runtest pdb4amber -i 3ptb.pdb -o 3ptb_amber_dpy.pdb -dpy 
 runtest pdb4amber -i 3ptb.pdb -o 3ptb_amber.pdb
 runtest pdb4amber -i 3ptb.pdb -o 3ptb_amber_ph.pdb --constantph 
@@ -38,4 +36,6 @@ runtest pdb4amber -i 2mpi.pdb -o 2mpi_amber_model.pdb --model 2
 ../dacdif 2mpi_amber_model.pdb.save 2mpi_amber_model.pdb
 
 rm *water.pdb *altloc.pdb *nonprot.pdb *sslink *renum.txt
+rm error_output.txt
+rm reduce_info.log
 exit 0
