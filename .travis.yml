@@ -26,6 +26,9 @@ install:
     - pip install . -v --upgrade # overwrite AmberTools
 
 script:
+    - reduce -Version
+    - tleap -h
+    - which AddToBox
     - source devtools/ci/run_tests.sh
 
 after_success:
