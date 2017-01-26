@@ -11,6 +11,12 @@ function runtest {
     return $status
 }
 
+if [ -f $AMBERHOME/AmberTools/test/dacdif ]; then
+    dacdif=$AMBERHOME/AmberTools/test/dacdif
+else
+    dacdif=../dacdif
+fi
+
 runtest pdb4amber -i 3ptb.pdb -o 3ptb_amber_dpy.pdb -dpy 
 runtest pdb4amber -i 3ptb.pdb -o 3ptb_amber.pdb
 runtest pdb4amber -i 3ptb.pdb -o 3ptb_amber_ph.pdb --constantph 
@@ -23,17 +29,17 @@ runtest pdb4amber -i 3ptb.pdb -o 3ptb_amber_reduce.pdb --reduce
 runtest pdb4amber --reduce < 3ptb.pdb > 3ptb_amber_reduce_stdin.pdb
 runtest pdb4amber -i 2mpi.pdb -o 2mpi_amber_model.pdb --model 2
 
-../dacdif 3ptb_amber_dpy.pdb.save 3ptb_amber_dpy.pdb
-../dacdif 3ptb_amber.pdb.save  3ptb_amber.pdb  
-../dacdif 3ptb_amber_ph.pdb.save 3ptb_amber_ph.pdb
-../dacdif 3ptb_amber_H.pdb.save 3ptb_amber_H.pdb
-../dacdif 3ptb_amber_pipe.pdb.save 3ptb_amber_pipe.pdb
-../dacdif 4lzt_amber_mostpop.pdb.save 4lzt_amber_mostpop.pdb
-../dacdif 4lzt_amber.pdb.save 4lzt_amber.pdb
-../dacdif HIStest_amber.pdb.save HIStest_amber.pdb
-../dacdif 3ptb_amber_reduce.pdb.save 3ptb_amber_reduce.pdb
-../dacdif 3ptb_amber_reduce.pdb.save 3ptb_amber_reduce_stdin.pdb
-../dacdif 2mpi_amber_model.pdb.save 2mpi_amber_model.pdb
+$dacdif 3ptb_amber_dpy.pdb.save 3ptb_amber_dpy.pdb
+$dacdif 3ptb_amber.pdb.save  3ptb_amber.pdb  
+$dacdif 3ptb_amber_ph.pdb.save 3ptb_amber_ph.pdb
+$dacdif 3ptb_amber_H.pdb.save 3ptb_amber_H.pdb
+$dacdif 3ptb_amber_pipe.pdb.save 3ptb_amber_pipe.pdb
+$dacdif 4lzt_amber_mostpop.pdb.save 4lzt_amber_mostpop.pdb
+$dacdif 4lzt_amber.pdb.save 4lzt_amber.pdb
+$dacdif HIStest_amber.pdb.save HIStest_amber.pdb
+$dacdif 3ptb_amber_reduce.pdb.save 3ptb_amber_reduce.pdb
+$dacdif 3ptb_amber_reduce.pdb.save 3ptb_amber_reduce_stdin.pdb
+$dacdif 2mpi_amber_model.pdb.save 2mpi_amber_model.pdb
 
 rm *water.pdb *altloc.pdb *nonprot.pdb *sslink *renum.txt
 rm error_output.txt
