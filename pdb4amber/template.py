@@ -9,12 +9,11 @@ source leaprc.gaff2
 leap_template = """
 {force_fields}
 {more_force_fields}
+x = loadpdb {input_pdb}
 {box_info}
 {more_leap_cmds}
-set default PBRaddi mbondi3\n')
-set default nocenter on\n')
-x = loadpdb {input_pdb}
+set default PBRaddi mbondi3
+set default nocenter on
 saveAmberParm x {prmtop} {rst7}
-quit
 quit
 """
