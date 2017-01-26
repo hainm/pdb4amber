@@ -231,7 +231,7 @@ def test_simplest_command_pdb4amber_mypdb():
         parm = pmd.read_PDB(input_pdb)
         assert len(parm.atoms) == 574
 
-@pytest.mark.xfail
+@pytest.xfail
 def test_simplest_command_pdb4amber():
     command = ['pdb4amber']
     with tempfolder():
