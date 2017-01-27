@@ -17,3 +17,5 @@ set default nocenter on
 saveAmberParm x {prmtop} {rst7}
 quit
 """
+
+water_str = 'HETATM  607  O   HOH A 167      12.812  27.696   7.842  1.00 56.38           O'
