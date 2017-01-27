@@ -69,8 +69,12 @@ def run_tleap(parm, ns_names, gaplist, sslist, forcefield_cmd=None, leap_input=N
     # strangely tleap appends to the logfile so must delete first
     cmd = ['tleap', '-f', tleap_input_file]
     try:
-        output = subprocess.check_output(cmd)
-        return parmed.load_file(prmtop, rst7)
+        output = subprocess.check_output(cmd).decode()
+        try:
+            return parmed.load_file(prmtop, rst7)
+        except parmed.exceptions.FormatNotFound as e:
+            print(output)
+            raise e
     except subprocess.CalledProcessError as e:
         print(e.sdtout)
         raise e
