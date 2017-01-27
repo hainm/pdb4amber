@@ -4,9 +4,9 @@ from .leap_runner import run_tleap
 
 
 class Leapify(AmberPDBFixer):
-    from parmed.tools.simulations import sanderapi
 
     def minimize(self, *args, **kwargs):
+        from parmed.tools.simulations import sanderapi
         sanderapi.minimize(self.parm, *args, **kwargs)
 
     def leapify(self):
