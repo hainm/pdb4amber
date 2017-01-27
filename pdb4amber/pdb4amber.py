@@ -58,7 +58,6 @@ class AmberPDBFixer(object):
             self.parm.residues[idx].name = resname
             idxs.append(str(idx+1))
         excluded_mask = ':' + ','.join(idxs) + '&!@C,CA,N,O,H'
-        print(excluded_mask)
         self.parm.strip(excluded_mask)
         return self
 
