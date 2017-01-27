@@ -53,10 +53,13 @@ class AmberPDBFixer(object):
         mask_list: List[Tuple[int, str]]
             [(1, 'ARG'),]
         '''
+        idxs = []
         for (idx, resname) in mask_list:
             self.parm.residues[idx].name = resname
-            excluded_mask = ':' + str(idx+1) + '&!@C,CA,N,O,H'
-            self.parm.strip(excluded_mask)
+            idxs.append(str(idx+1))
+        excluded_mask = ':' + ','.join(idxs) + '&!@C,CA,N,O,H'
+        print(excluded_mask)
+        self.parm.strip(excluded_mask)
         return self
 
     def pack(self, mol, n_copies, ig=8888, grid_spacing=0.2):

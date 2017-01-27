@@ -1,3 +1,4 @@
+from functools import wraps
 from .leapify import Leapify
 from nglview import ParmEdTrajectory
 
@@ -11,6 +12,7 @@ def _update_structure(fixer):
                args=[struct,])
 
 def wrap(func, fixer):
+    @wraps(func)
     def me(*args, **kwargs):
         result = func(*args, **kwargs)
         _update_structure(fixer)
@@ -25,7 +27,10 @@ class Viewer(Leapify):
         self.strip = wrap(super(Viewer, self).strip, fixer=self)
         self.add_hydrogen = wrap(super(Viewer, self).add_hydrogen, fixer=self)
         self.add_missing_atoms = wrap(super(Viewer, self).add_missing_atoms, fixer=self)
+        self.remove_water = wrap(super(Viewer, self).remove_water, fixer=self)
+        self.assign_histidine = wrap(super(Viewer, self).assign_histidine, fixer=self)
         self.pack = wrap(self.pack, fixer=self)
+        self.mutate = wrap(self.mutate, fixer=self)
         self.leapify = wrap(self.leapify, fixer=self)
 
     def visualize(self):
