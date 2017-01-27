@@ -3,6 +3,7 @@ import parmed
 
 from .template import default_force_field, leap_template
 
+
 def run_tleap(parm, ns_names, gaplist, sslist, forcefield_cmd=''):
     # adapted from amber_adaptbx code in phenix
     '''
@@ -51,13 +52,13 @@ def run_tleap(parm, ns_names, gaplist, sslist, forcefield_cmd=''):
             more_leap_cmds += 'bond x.%d.SG x.%d.SG\n' % (resid1, resid2)
 
     leap_string = leap_template.format(
-            force_fields=default_force_field,
-            more_force_fields=forcefield_cmd,
-            box_info=box_info,
-            input_pdb=input_pdb,
-            prmtop=prmtop,
-            rst7=rst7,
-            more_leap_cmds=more_leap_cmds)
+        force_fields=default_force_field,
+        more_force_fields=forcefield_cmd,
+        box_info=box_info,
+        input_pdb=input_pdb,
+        prmtop=prmtop,
+        rst7=rst7,
+        more_leap_cmds=more_leap_cmds)
 
     f.write(leap_string)
     f.close()

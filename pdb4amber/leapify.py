@@ -3,8 +3,8 @@ from parmed.tools.simulations import sanderapi
 from .utils import tempfolder
 from .leap_runner import run_tleap
 
-class Leapify(AmberPDBFixer):
 
+class Leapify(AmberPDBFixer):
     def minimize(self, *args, **kwargs):
         sanderapi.minimize(self.parm, *args, **kwargs)
 
