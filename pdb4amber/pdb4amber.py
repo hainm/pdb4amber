@@ -5,16 +5,13 @@ import subprocess
 from itertools import chain
 import argparse
 import parmed
+from .compat import StringIO
 
 import logging
 
 logger = logging.getLogger('pdb4amber_log')
 logger.setLevel(logging.DEBUG)
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import StringIO
 
 PY3 = sys.version_info[0] == 3
 if PY3:
