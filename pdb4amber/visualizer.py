@@ -41,3 +41,6 @@ class Viewer(Leapify):
         def callback(xyz):
             self._view.coordinates_dict = {0: xyz}
         return super(Viewer, self).minimize(*args, **kwargs, callback=callback)
+
+    def update_structure(self):
+        _update_structure(self)
