@@ -354,9 +354,8 @@ class AmberPDBFixer(object):
         ''' Remove waters and return new `parm` with only waters
         '''
         water_mask = ':' + ','.join(parmed.residue.WATER_NAMES)
-        water_parm = self.parm[water_mask]
         self.parm.strip(water_mask)
-        return water_parm
+        return self
 
     def _summary(self):
         sumdict = dict(has_altlocs=False)
@@ -483,7 +482,9 @@ def run(arg_pdbout, arg_pdbin,
 
     # remove water if -d option used:=====================================
     if arg_dry:
-        water_parm = pdbfixer.remove_water()
+        water_mask = ':' + ','.join(parmed.residue.WATER_NAMES)
+        water_parm = pdbfixer.parm[water_mask]
+        pdbfixer.remove_water()
         water_parm.save('{}_water.pdb'.format(base_filename),
                         overwrite=True)
     # find histidines that might have to be changed:=====================

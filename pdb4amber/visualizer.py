@@ -15,7 +15,8 @@ def wrap(func, fixer):
     @wraps(func)
     def me(*args, **kwargs):
         result = func(*args, **kwargs)
-        _update_structure(fixer)
+        if not fixer.delay_update_structure:
+            _update_structure(fixer)
         return result
     return me
 
@@ -24,6 +25,7 @@ class Viewer(Leapify):
     def __init__(self, *args, **kwargs):
         super(Viewer, self).__init__(*args, **kwargs)
         self._view = None
+        self.delay_update_structure = False
         self.strip = wrap(super(Viewer, self).strip, fixer=self)
         self.add_hydrogen = wrap(super(Viewer, self).add_hydrogen, fixer=self)
         self.add_missing_atoms = wrap(super(Viewer, self).add_missing_atoms, fixer=self)
