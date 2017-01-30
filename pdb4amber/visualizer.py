@@ -35,6 +35,9 @@ class Viewer(AmberBuilder):
         # TODO: decorator?
         self.delay_update_structure = False
         self.build_protein = wrap(super(Viewer, self).build_protein, fixer=self)
+        self.build_bdna = wrap(super(Viewer, self).build_protein, fixer=self)
+        self.build_adna = wrap(super(Viewer, self).build_adna, fixer=self)
+        self.build_arna = wrap(super(Viewer, self).build_arna, fixer=self)
         self.strip = wrap(super(Viewer, self).strip, fixer=self)
         self.add_hydrogen = wrap(super(Viewer, self).add_hydrogen, fixer=self)
         self.add_missing_atoms = wrap(super(Viewer, self).add_missing_atoms, fixer=self)
