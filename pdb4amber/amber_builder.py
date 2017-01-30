@@ -11,3 +11,13 @@ class AmberBuilder(Leapify):
         from pdb4amber.builder.pytraj_build import build_bdna
         self.parm = build_bdna(*args, **kwargs)
         return self
+
+    def build_adna(self, *args, **kwargs):
+        from pdb4amber.builder.pytraj_build import build_adna
+        self.parm = build_bdna(*args, **kwargs)
+        return self
+
+    def build_arna(self, *args, **kwargs):
+        from pdb4amber.builder.pytraj_build import build_arna
+        self.parm = build_bdna(*args, **kwargs)
+        return self
