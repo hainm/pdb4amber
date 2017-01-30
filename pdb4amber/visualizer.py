@@ -1,5 +1,5 @@
 from functools import wraps
-from .leapify import Leapify
+from .amber_build import AmberBuilder
 from nglview import ParmEdTrajectory
 
 def _update_structure(fixer):
@@ -20,7 +20,7 @@ def wrap(func, fixer):
         return result
     return me
 
-class Viewer(Leapify):
+class Viewer(AmberBuilder):
 
     def __init__(self, *args, **kwargs):
         super(Viewer, self).__init__(*args, **kwargs)
