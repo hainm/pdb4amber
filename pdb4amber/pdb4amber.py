@@ -183,7 +183,10 @@ class AmberPDBFixer(object):
     
         #  N.B.: following only finds gaps in protein chains!
         for i, atom in enumerate(parm.atoms):
-            if atom.name in ['CA', 'CH3'] and atom.residue.name in RESPROT:
+            # TODO: if using 'CH3', this will be failed with 
+            # ACE ALA ALA ALA NME system
+            # if atom.name in ['CA', 'CH3'] and atom.residue.name in RESPROT:
+            if atom.name in ['CA',] and atom.residue.name in RESPROT:
                 CA_atoms.append(i)
             if atom.name == 'C' and atom.residue.name in RESPROT:
                 C_atoms.append(i)
