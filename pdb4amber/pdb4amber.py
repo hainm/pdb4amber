@@ -36,11 +36,11 @@ class AmberPDBFixer(object):
     ----------
     parm : parmed.Structure
     '''
-    def __init__(self, parm):
+    def __init__(self, parm=None):
         # TODO: make a copy?
         # Why not now? parm[:] will not correctly assign TER residue
         # self.parm = parm[:]
-        self.parm = parm
+        self.parm = parm if parm is not None else parmed.Structure()
 
     def mutate(self, mask_list):
         '''
