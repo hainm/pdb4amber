@@ -1,5 +1,4 @@
 import warnings
-import os
 import parmed as pmd
 
 from .compat import StringIO
