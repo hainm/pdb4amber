@@ -18,5 +18,5 @@ func_dict = {
     'water': _get_water
 }
 
-def get(what):
-    return func_dict[what]()
+def get(what, *args, **kwargs):
+    return func_dict[what](*args, **kwargs)
