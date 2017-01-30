@@ -16,6 +16,6 @@ setup(name='pdb4amber',
       author='Romain M. Wolf and AMBER developers',
       author_email='amber@ambermd.org',
       url='http://ambermd.org/',
-      packages=['pdb4amber'],
+      packages=['pdb4amber', 'pdb4amber.builder'],
       **kws
 )
