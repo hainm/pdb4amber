@@ -1,15 +1,22 @@
 from functools import wraps
-from .amber_build import AmberBuilder
-from nglview import ParmEdTrajectory
+from .amber_builder import AmberBuilder
+import nglview
 
 def _update_structure(fixer):
    if fixer._view is not None:
-       traj = ParmEdTrajectory(fixer.parm)
-       struct = dict(data=traj.get_structure_string(),
-                     ext='pdb')
-       fixer._view._remote_call('replaceStructure',
-               target='Widget',
-               args=[struct,])
+       traj = nglview.ParmEdTrajectory(fixer.parm)
+       if fixer._view.n_components == 0:
+           fixer._view.add_trajectory(traj)
+           if len(fixer.parm.atoms) <= 50:
+               # for small molecule
+               fixer._view.add_licorice()
+           fixer._view.center()
+       else:
+           struct = dict(data=traj.get_structure_string(),
+                         ext='pdb')
+           fixer._view._remote_call('replaceStructure',
+                   target='Widget',
+                   args=[struct,])
 
 def wrap(func, fixer):
     @wraps(func)
@@ -25,7 +32,9 @@ class Viewer(AmberBuilder):
     def __init__(self, *args, **kwargs):
         super(Viewer, self).__init__(*args, **kwargs)
         self._view = None
+        # TODO: decorator?
         self.delay_update_structure = False
+        self.build_protein = wrap(super(Viewer, self).build_protein, fixer=self)
         self.strip = wrap(super(Viewer, self).strip, fixer=self)
         self.add_hydrogen = wrap(super(Viewer, self).add_hydrogen, fixer=self)
         self.add_missing_atoms = wrap(super(Viewer, self).add_missing_atoms, fixer=self)
@@ -36,7 +45,10 @@ class Viewer(AmberBuilder):
         self.leapify = wrap(self.leapify, fixer=self)
 
     def visualize(self):
-        self._view = super(Viewer, self).visualize()
+        if self.parm.coordinates.shape[0] == 0:
+            self._view = nglview.NGLWidget()
+        else:
+            self._view = super(Viewer, self).visualize()
         return self._view
 
     def minimize(self, *args, **kwargs):
