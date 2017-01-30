@@ -6,7 +6,8 @@ Install
 -------
 - Require 
     - [ParmEd](https://github.com/parmed/parmed)
-    - tleap (optional)
+    - tleap (optional, used for build structure, add missing atoms, mutation, ...)
+    - scipy (optional, used for minimization)
 
 ```bash
 python setup.py install
