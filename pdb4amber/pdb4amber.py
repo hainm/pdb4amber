@@ -279,6 +279,10 @@ class AmberPDBFixer(object):
         Returns
         -------
         parm : parmed.Structure
+
+        Requires
+        --------
+        reduce
         '''
         try:
             fileobj = StringIO()
@@ -353,6 +357,7 @@ class AmberPDBFixer(object):
     def remove_water(self):
         ''' Remove waters and return new `parm` with only waters
         '''
+        # TODO : add AMBER water names (TP3, ...)
         water_mask = ':' + ','.join(parmed.residue.WATER_NAMES)
         self.parm.strip(water_mask)
         return self

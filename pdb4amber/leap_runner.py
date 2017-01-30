@@ -76,5 +76,5 @@ def run_tleap(parm, ns_names, gaplist, sslist, forcefield_cmd=None, leap_input=N
             print(output)
             raise e
     except subprocess.CalledProcessError as e:
-        print(e.sdtout)
+        print(e.stdout)
         raise e
