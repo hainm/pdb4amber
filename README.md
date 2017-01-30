@@ -5,9 +5,21 @@
 Install
 -------
 - Require 
+
     - [ParmEd](https://github.com/parmed/parmed)
     - tleap (optional, used for build structure, add missing atoms, mutation, ...)
     - scipy (optional, used for minimization)
+    - nglview (optional, used for visualization in notebook)
+
+- Quick install
+
+```bash
+conda install ambertools -c ambermd
+conda install scipy
+conda install ipywidgets -c conda-forge 
+conda install nglview -c bioconda
+pip install git+https://github.com/amber-md/pdb4amber
+```
 
 ```bash
 python setup.py install
