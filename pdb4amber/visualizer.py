@@ -57,7 +57,7 @@ class Viewer(AmberBuilder):
     def minimize(self, *args, **kwargs):
         def callback(xyz):
             self._view.coordinates_dict = {0: xyz}
-        return super(Viewer, self).minimize(*args, **kwargs, callback=callback)
+        return super(Viewer, self).minimize(*args, callback=callback, **kwargs)
 
     def update_structure(self):
         _update_structure(self)
