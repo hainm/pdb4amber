@@ -50,20 +50,24 @@ class AmberPDBFixer(object):
             self.parm = parm
 
     def mutate(self, mask_list):
+        # TODO : same syntax as pdbfixer (openmm)?
         '''
 
         Parameters
         ----------
         mask_list: List[Tuple[int, str]]
             [(1, 'ARG'),]
+        
+        Notes
+        -----
+        Should also use `add_hydrogen` and `add_missing_atoms`
         '''
         idxs = []
         for (idx, resname) in mask_list:
             self.parm.residues[idx].name = resname
             idxs.append(str(idx+1))
-        excluded_mask = ':' + ','.join(idxs) + '&!@C,CA,N,O,H'
+        excluded_mask = ':' + ','.join(idxs) + '&!@C,CA,N,O'
         self.parm.strip(excluded_mask)
-        self.add_missing_atoms()
         return self
 
     def pack(self, mol, n_copies, ig=8888, grid_spacing=0.2):
