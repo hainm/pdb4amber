@@ -2,6 +2,8 @@ from .leapify import Leapify
 
 class AmberBuilder(Leapify):
     ''' Require many programs in AmberTools (pytraj, tleap, nab, ...)
+
+    Inheritance: AmberPDBFixer --> Leapify --> AmberBuilder
     '''
 
     def build_protein(self, *args, **kwargs):

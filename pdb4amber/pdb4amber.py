@@ -31,7 +31,8 @@ __version__ = '1.3'
 
 
 class AmberPDBFixer(object):
-    '''
+    ''' Base class (?) for handling pdb4amber (try to mimic
+    original code)
 
     Parameters
     ----------

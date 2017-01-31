@@ -28,6 +28,14 @@ def wrap(func, fixer):
     return me
 
 class Viewer(AmberBuilder):
+    ''' Fixing/Building/Editing/Visualizing in Jupyter notebook
+
+    Inheritance: AmberPDBFixer --> Leapify --> AmberBuilder --> Viewer
+
+    Notes
+    -----
+    EXPERIMENTAL
+    '''
 
     def __init__(self, *args, **kwargs):
         super(Viewer, self).__init__(*args, **kwargs)
