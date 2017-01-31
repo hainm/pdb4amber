@@ -15,6 +15,7 @@ addons:
     packages:
     - gcc-5
     - g++-5
+    - gfortran
     - clang-3.6
     - unzip
 

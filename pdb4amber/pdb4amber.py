@@ -5,16 +5,13 @@ import subprocess
 from itertools import chain
 import argparse
 import parmed
+from .compat import StringIO
 
 import logging
 
 logger = logging.getLogger('pdb4amber_log')
 logger.setLevel(logging.DEBUG)
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import StringIO
 
 PY3 = sys.version_info[0] == 3
 if PY3:
@@ -39,11 +36,11 @@ class AmberPDBFixer(object):
     ----------
     parm : parmed.Structure
     '''
-    def __init__(self, parm):
+    def __init__(self, parm=None):
         # TODO: make a copy?
         # Why not now? parm[:] will not correctly assign TER residue
         # self.parm = parm[:]
-        self.parm = parm
+        self.parm = parm if parm is not None else parmed.Structure()
 
     def mutate(self, mask_list):
         '''
@@ -53,10 +50,12 @@ class AmberPDBFixer(object):
         mask_list: List[Tuple[int, str]]
             [(1, 'ARG'),]
         '''
+        idxs = []
         for (idx, resname) in mask_list:
             self.parm.residues[idx].name = resname
-            excluded_mask = ':' + str(idx+1) + '&!@C,CA,N,O,H'
-            self.parm.strip(excluded_mask)
+            idxs.append(str(idx+1))
+        excluded_mask = ':' + ','.join(idxs) + '&!@C,CA,N,O,H'
+        self.parm.strip(excluded_mask)
         return self
 
     def pack(self, mol, n_copies, ig=8888, grid_spacing=0.2):
@@ -121,7 +120,10 @@ class AmberPDBFixer(object):
                 else:
                     residue.name = 'HIS'
         return self
-    
+
+    def strip(self, mask):
+        self.parm.strip(mask)
+        return self
     
     def find_missing_heavy_atoms(self, heavy_atom_dict=HEAVY_ATOM_DICT):
         residue_collection = []
@@ -181,7 +183,10 @@ class AmberPDBFixer(object):
     
         #  N.B.: following only finds gaps in protein chains!
         for i, atom in enumerate(parm.atoms):
-            if atom.name in ['CA', 'CH3'] and atom.residue.name in RESPROT:
+            # TODO: if using 'CH3', this will be failed with 
+            # ACE ALA ALA ALA NME system
+            # if atom.name in ['CA', 'CH3'] and atom.residue.name in RESPROT:
+            if atom.name in ['CA',] and atom.residue.name in RESPROT:
                 CA_atoms.append(i)
             if atom.name == 'C' and atom.residue.name in RESPROT:
                 C_atoms.append(i)
@@ -277,6 +282,10 @@ class AmberPDBFixer(object):
         Returns
         -------
         parm : parmed.Structure
+
+        Requires
+        --------
+        reduce
         '''
         try:
             fileobj = StringIO()
@@ -351,10 +360,10 @@ class AmberPDBFixer(object):
     def remove_water(self):
         ''' Remove waters and return new `parm` with only waters
         '''
+        # TODO : add AMBER water names (TP3, ...)
         water_mask = ':' + ','.join(parmed.residue.WATER_NAMES)
-        water_parm = self.parm[water_mask]
         self.parm.strip(water_mask)
-        return water_parm
+        return self
 
     def _summary(self):
         sumdict = dict(has_altlocs=False)
@@ -481,7 +490,9 @@ def run(arg_pdbout, arg_pdbin,
 
     # remove water if -d option used:=====================================
     if arg_dry:
-        water_parm = pdbfixer.remove_water()
+        water_mask = ':' + ','.join(parmed.residue.WATER_NAMES)
+        water_parm = pdbfixer.parm[water_mask]
+        pdbfixer.remove_water()
         water_parm.save('{}_water.pdb'.format(base_filename),
                         overwrite=True)
     # find histidines that might have to be changed:=====================
