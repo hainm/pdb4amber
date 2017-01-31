@@ -32,7 +32,7 @@ def test_write_model():
     with tempfolder():
         subprocess.check_call(['pdb4amber', '1l2y', '--pdbid', '-o', pdb_out])
         parm = pmd.load_file(pdb_out)
-        assert parm.get_coordinates().shape == (38, 304, 3)
+        assert parm.get_coordinates().shape == (1, 304, 3)
 
     # model 1
     with tempfolder():

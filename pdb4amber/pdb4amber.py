@@ -6,6 +6,7 @@ from itertools import chain
 import argparse
 import parmed
 from .compat import StringIO
+from .leap_runner import _make_leap_template
 
 import logging
 
@@ -407,6 +408,7 @@ def run(arg_pdbout, arg_pdbin,
         arg_elbow=False,
         arg_logfile='pdb4amber.log',
         arg_keep_altlocs=False,
+        arg_leap_template=False,
         ):
 
     # always reset handlers to avoid duplication if run method is called more
@@ -533,10 +535,9 @@ def run(arg_pdbout, arg_pdbin,
     # =====================================================================
     # make final output to new PDB file
     # =====================================================================
-    if arg_model >= 0:
-        pdbfixer.parm.coordinates = pdbfixer.parm.get_coordinates()[arg_model]
+    final_coordinates = pdbfixer.parm.get_coordinates()[arg_model]
 
-    write_kwargs = dict()
+    write_kwargs = dict(coordinates=final_coordinates)
     if not arg_keep_altlocs:
         if sumdict['has_altlocs']:
             logger.info('The alternate coordinates have been discarded.')
@@ -557,13 +558,28 @@ def run(arg_pdbout, arg_pdbin,
                 **write_kwargs)
         output.seek(0)
         if arg_pdbout in ['stdout', 'stderr']:
-             print(output.read())
+            pdb_out_filename = 'stdout.pdb'
+            print(output.read())
         else:
+            pdb_out_filename = arg_pdbout
             with open(arg_pdbout, 'w') as fh:
                 fh.write(output.read())
     else:
         # mol2 does not accept altloc keyword
-        pdbfixer.parm.save(arg_pdbout, overwrite=True)
+        pdb_out_filename = arg_pdbout
+        pdbfixer.parm.save(pdb_out_filename, overwrite=True)
+
+    if arg_leap_template:
+        with open('leap.template.in', 'w') as fh:
+            if arg_prot:
+                final_ns_names = []
+            else:
+                final_ns_names = ns_names
+            content = _make_leap_template(parm, final_ns_names, gaplist, sslist,
+                                          input_pdb=pdb_out_filename,
+                                          prmtop='prmtop',
+                                          rst7='rst7')
+            fh.write(content)
     return ns_names, gaplist, sslist
 
 
@@ -601,13 +617,13 @@ def main():
                         "Subjected to change")
     parser.add_argument("--add-missing-atoms", action="store_true", dest="add_missing_atoms",
                         help="Use tleap to add missing atoms")
-    parser.add_argument("--model", type=int, dest="model", default=-1,
+    parser.add_argument("--model", type=int, dest="model", default=1,
                         help="Model to use from a multi-model pdb file (integer).  (default: use 1st model)")
     parser.add_argument("-l", "--logfile", metavar="FILE", dest="logfile",
                         help="log filename", default='stderr')
     parser.add_argument("-v", "--version", action="store_true", dest="version",
                         help="version")
-    parser.add_argument("--leap-template", default='leap.template.in', dest="leap_template",
+    parser.add_argument("--leap-template", action='store_true', dest="leap_template",
                         help="write a leap template for easy adaption\n(EXPERIMENTAL)")
     opt = parser.parse_args()
 
@@ -646,7 +662,8 @@ def main():
         arg_model=opt.model-1,
         arg_keep_altlocs=opt.keep_altlocs,
         arg_add_missing_atoms=opt.add_missing_atoms,
-        arg_logfile=logfile)
+        arg_logfile=logfile,
+        arg_leap_template=opt.leap_template)
 
 if __name__ == '__main__':
     main()
