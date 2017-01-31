@@ -19,7 +19,7 @@ source activate myenv
 conda install numpy nomkl -y
 conda install scipy -y
 conda install coverage -y 
-conda install libgfortran -c conda-forge -y
+# conda install libgfortran -c conda-forge -y
 
 cat >$HOME/.amberrc <<EOF
 Name = travis-build
