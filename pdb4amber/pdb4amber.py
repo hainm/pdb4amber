@@ -607,6 +607,8 @@ def main():
                         help="log filename", default='stderr')
     parser.add_argument("-v", "--version", action="store_true", dest="version",
                         help="version")
+    parser.add_argument("--leap-template", default='leap.template.in', dest="leap_template",
+                        help="write a leap template for easy adaption\n(EXPERIMENTAL)")
     opt = parser.parse_args()
 
     # pdbin : {str, file object, parmed.Structure}
