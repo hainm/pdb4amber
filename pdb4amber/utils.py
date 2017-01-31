@@ -21,3 +21,7 @@ def amberbin(program_str):
         return program
     else:
         return ''
+
+def which(program):
+    from distutils.spawn import find_executable
+    return find_executable(program)

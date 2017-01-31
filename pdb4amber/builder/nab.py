@@ -1,6 +1,6 @@
 import os
 import subprocess
-import shutil
+from ..utils import which
 
 def run(command):
     root = 'tmp_jamber'
@@ -10,7 +10,7 @@ def run(command):
 
     with open(nabin, 'w') as fh:
         fh.write(command)
-    nab_bin = shutil.which('nab')
+    nab_bin = which('nab')
     prefix = os.path.abspath(
         os.path.join(os.path.dirname(nab_bin), '..'))
     os.environ['AMBERHOME'] = prefix
