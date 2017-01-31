@@ -62,6 +62,7 @@ class AmberPDBFixer(object):
             idxs.append(str(idx+1))
         excluded_mask = ':' + ','.join(idxs) + '&!@C,CA,N,O,H'
         self.parm.strip(excluded_mask)
+        self.add_missing_atoms()
         return self
 
     def pack(self, mol, n_copies, ig=8888, grid_spacing=0.2):
