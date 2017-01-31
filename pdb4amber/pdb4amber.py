@@ -141,9 +141,7 @@ class AmberPDBFixer(object):
                                         if atom.atomic_number != 1))
                 n_missing = heavy_atom_dict[residue.name] - n_heavy_atoms
                 if n_missing > 0:
-                    logger.warn('{}_{} misses {} heavy atom(s)'.format(
-                        residue.name, residue.idx + 1, n_missing))
-                    residue_collection.append(residue)
+                    residue_collection.append([residue, n_missing])
         return residue_collection
 
     def add_missing_atoms(self):
@@ -534,7 +532,14 @@ def run(arg_pdbout, arg_pdbin,
             pdbfixer.add_hydrogen()
 
     # count heavy atoms:==================================================
-    pdbfixer.find_missing_heavy_atoms()
+    missing_atom_residues = pdbfixer.find_missing_heavy_atoms()
+    logger.info("\n---------- Mising heavy atom(s)\n")
+    if missing_atom_residues:
+        for (residue, n_missing) in missing_atom_residues:
+            logger.warn('{}_{} misses {} heavy atom(s)'.format(
+                residue.name, residue.idx + 1, n_missing))
+    else:
+        logger.info('None')
 
     if arg_add_missing_atoms:
         pdbfixer.add_missing_atoms()
