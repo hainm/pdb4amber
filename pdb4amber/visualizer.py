@@ -69,3 +69,12 @@ class ViewerEditor(AmberBuilder):
 
     def update_structure(self):
         _update_structure(self)
+
+    @property
+    def coordinates(self):
+        return self.parm.coordinates
+    
+    @coordinates.setter
+    def coordinates(self, values):
+        self.parm.coordinates = values
+        self._view.coordinates_dict = {0: self.parm.coordinates}
