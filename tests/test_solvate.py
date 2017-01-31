@@ -1,6 +1,7 @@
-from pdb4amber.builder.pytraj_build import solvate, build_protein
+from pdb4amber.amber_builder import AmberBuilder
 
 def test_solvate():
-    parm = build_protein('ALA ALA', ['alpha:1-2'])
-    parm2 = solvate(parm)
-    assert len(parm2.atoms) == 1092
+    builder = AmberBuilder()
+    builder.build_protein('ALA ALA', ['alpha:1-2'])
+    builder.solvate()
+    assert len(builder.parm.atoms) == 1092

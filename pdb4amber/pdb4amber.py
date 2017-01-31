@@ -602,7 +602,7 @@ def main():
     parser.add_argument("--add-missing-atoms", action="store_true", dest="add_missing_atoms",
                         help="Use tleap to add missing atoms")
     parser.add_argument("--model", type=int, dest="model", default=-1,
-                        help="Model to use from a multi-model pdb file (integer).  (default: use all models)")
+                        help="Model to use from a multi-model pdb file (integer).  (default: use 1st model)")
     parser.add_argument("-l", "--logfile", metavar="FILE", dest="logfile",
                         help="log filename", default='stderr')
     parser.add_argument("-v", "--version", action="store_true", dest="version",

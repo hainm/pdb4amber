@@ -1,6 +1,8 @@
 from .leapify import Leapify
 
 class AmberBuilder(Leapify):
+    ''' Require many programs in AmberTools (pytraj, tleap, nab, ...)
+    '''
 
     def build_protein(self, *args, **kwargs):
         from pdb4amber.builder.pytraj_build import build_protein
@@ -20,4 +22,9 @@ class AmberBuilder(Leapify):
     def build_arna(self, *args, **kwargs):
         from pdb4amber.builder.pytraj_build import build_arna
         self.parm = build_bdna(*args, **kwargs)
+        return self
+
+    def solvate(self, *args, **kwargs):
+        from pdb4amber.builder.pytraj_build import solvate
+        self.parm = solvate(self.parm, *args, **kwargs)
         return self
