@@ -35,13 +35,18 @@ class AmberPDBFixer(object):
 
     Parameters
     ----------
-    parm : parmed.Structure
+    parm : str or parmed.Structure or None, default None
     '''
     def __init__(self, parm=None):
         # TODO: make a copy?
         # Why not now? parm[:] will not correctly assign TER residue
         # self.parm = parm[:]
-        self.parm = parm if parm is not None else parmed.Structure()
+        if isinstance(parm, string_types):
+            self.parm = parmed.load_file(parm)
+        elif parm is None:
+            self.parm = parmed.Structure()
+        else:
+            self.parm = parm
 
     def mutate(self, mask_list):
         '''

@@ -7,6 +7,15 @@ import parmed as pmd
 # local
 from utils import get_fn, tempfolder, _has_program
 
+def test_constructore_AmberPDBFixer():
+    fn = get_fn('4lzt/4lzt_h.pdb')
+    parm = pmd.load_file(fn)
+
+    fixer_0 = AmberPDBFixer(parm)
+    fixer_1 = AmberPDBFixer(fn)
+
+    assert len(fixer_0.parm.atoms) == len(fixer_1.parm.atoms)
+
 def test_assign_histidine():
     fn = get_fn('4lzt/4lzt_h.pdb')
     parm = pmd.load_file(fn)
