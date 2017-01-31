@@ -18,7 +18,7 @@ def _update_structure(fixer):
                    target='Widget',
                    args=[struct,])
 
-def wrap(func, fixer):
+def update_structure(func, fixer):
     @wraps(func)
     def me(*args, **kwargs):
         result = func(*args, **kwargs)
@@ -42,18 +42,18 @@ class ViewerEditor(AmberBuilder):
         self._view = None
         # TODO: decorator?
         self.delay_update_structure = False
-        self.build_protein = wrap(super(ViewerEditor, self).build_protein, fixer=self)
-        self.build_bdna = wrap(super(ViewerEditor, self).build_bdna, fixer=self)
-        self.build_adna = wrap(super(ViewerEditor, self).build_adna, fixer=self)
-        self.build_arna = wrap(super(ViewerEditor, self).build_arna, fixer=self)
-        self.strip = wrap(super(ViewerEditor, self).strip, fixer=self)
-        self.add_hydrogen = wrap(super(ViewerEditor, self).add_hydrogen, fixer=self)
-        self.add_missing_atoms = wrap(super(ViewerEditor, self).add_missing_atoms, fixer=self)
-        self.remove_water = wrap(super(ViewerEditor, self).remove_water, fixer=self)
-        self.assign_histidine = wrap(super(ViewerEditor, self).assign_histidine, fixer=self)
-        self.pack = wrap(self.pack, fixer=self)
-        self.mutate = wrap(self.mutate, fixer=self)
-        self.leapify = wrap(self.leapify, fixer=self)
+        self.build_protein = update_structure(super(ViewerEditor, self).build_protein, fixer=self)
+        self.build_bdna = update_structure(super(ViewerEditor, self).build_bdna, fixer=self)
+        self.build_adna = update_structure(super(ViewerEditor, self).build_adna, fixer=self)
+        self.build_arna = update_structure(super(ViewerEditor, self).build_arna, fixer=self)
+        self.strip = update_structure(super(ViewerEditor, self).strip, fixer=self)
+        self.add_hydrogen = update_structure(super(ViewerEditor, self).add_hydrogen, fixer=self)
+        self.add_missing_atoms = update_structure(super(ViewerEditor, self).add_missing_atoms, fixer=self)
+        self.remove_water = update_structure(super(ViewerEditor, self).remove_water, fixer=self)
+        self.assign_histidine = update_structure(super(ViewerEditor, self).assign_histidine, fixer=self)
+        self.pack = update_structure(self.pack, fixer=self)
+        self.mutate = update_structure(self.mutate, fixer=self)
+        self.leapify = update_structure(self.leapify, fixer=self)
 
     def visualize(self):
         if self.parm.coordinates.shape[0] == 0:
