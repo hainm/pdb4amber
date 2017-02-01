@@ -1,7 +1,10 @@
 import unittest
+import parmed as pmd
 from numpy.testing import assert_almost_equal as aa_eq
 from pdb4amber.amber_builder import AmberBuilder
 from pdb4amber.utils import tempfolder
+
+from utils import get_fn
 
 try:
     import pytraj
@@ -39,3 +42,10 @@ def test_build_nuleic_acid():
         builder.write_pdb(pdb_out)
         with open(pdb_out) as fh:
             assert "O2'" in fh.read()
+
+def test_build_unitcell():
+    pdb_fn = get_fn('2igd/2igd.pdb')
+    parm = pmd.load_file(pdb_fn)
+    builder = AmberBuilder(pdb_fn)
+    builder.build_unitcell()
+    assert parm.coordinates.shape[0] * 4 == builder.parm.coordinates.shape[0]
