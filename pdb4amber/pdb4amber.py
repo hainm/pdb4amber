@@ -7,6 +7,7 @@ import argparse
 import parmed
 from .compat import StringIO
 from .leap_runner import _make_leap_template
+from .utils import easy_call
 
 import logging
 
@@ -102,10 +103,7 @@ class AmberPDBFixer(object):
                 '-G', str(grid_spacing),
                 '-o', out_pdb
             ]
-            try:
-                subprocess.check_output(command, stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError as e:
-                raise RuntimeError(e.output.decode())
+            easy_call(command)
             self.parm = parmed.load_file(out_pdb)
         return self
 
@@ -159,7 +157,7 @@ class AmberPDBFixer(object):
                 fh.write('x = loadpdb {}\n'.format(in_pdb))
                 fh.write('savepdb x {}\n'.format(out_pdb))
                 fh.write('quit')
-            subprocess.check_output('tleap -f leap.in', shell=True)
+            easy_call('tleap -f leap.in', shell=True)
             self.parm = parmed.load_file(out_pdb)
         return self
     

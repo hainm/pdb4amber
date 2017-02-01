@@ -7,11 +7,10 @@ from shutil import rmtree
 
 def easy_call(command, *args, **kwargs):
     try:
-        output = subprocess.check_output(command, *args, **kwargs)
+        output = subprocess.check_output(command, *args, stderr=subprocess.STDOUT, **kwargs)
         return output
     except subprocess.CalledProcessError as e:
-        print(e.stderr)
-        raise e
+        raise RuntimeError(e.output.decode())
 
 @contextmanager
 def tempfolder():
