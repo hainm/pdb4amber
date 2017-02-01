@@ -63,3 +63,6 @@ def test_viewer_editor():
     editor.remove_water()
     editor.leapify()
     editor.minimize(igb=None, maxcyc=10, disp=False)
+
+    # coverage
+    editor.coordinates += 1.
