@@ -1,7 +1,16 @@
 import os
+import subprocess
 from contextlib import contextmanager
 import tempfile
 from shutil import rmtree
+
+
+def easy_call(command, *args, **kwargs):
+    try:
+        output = subprocess.check_output(command, *args, stderr=subprocess.STDOUT, **kwargs)
+        return output.decode()
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(e.output.decode())
 
 @contextmanager
 def tempfolder():

@@ -5,7 +5,7 @@ from .leap_runner import run_tleap
 
 class Leapify(AmberPDBFixer):
 
-    def minimize(self, *args, **kwargs):
+    def minimize(self, **kwargs):
         ''' port ParmED'minimize function
 
         Examples
@@ -13,8 +13,27 @@ class Leapify(AmberPDBFixer):
         >>> # Using PME
         >>> fixer.minimize(igb=None, saltcon=None, cutoff=10., maxcyc=100, tol=1E-6)
         '''
+        igb = kwargs.get('igb', None)
+
+        if igb is not None:
+            # GB
+            if 'saltcon' not in kwargs:
+                kwargs['saltcon'] = 0.
+            if 'cutoff' not in kwargs:
+                kwargs['cutoff'] = 999.
+        else:
+            # PME
+            kwargs['saltcon'] = None
+            if 'cutoff' not in kwargs:
+                kwargs['cutoff'] = 8.
+
+        if 'maxcyc' not in kwargs:
+            kwargs['maxcyc'] = 500.
+        if 'tol' not in kwargs:
+            kwargs['tol'] = 1E-6
+
         from parmed.tools.simulations import sanderapi
-        sanderapi.minimize(self.parm, *args, **kwargs)
+        sanderapi.minimize(self.parm, **kwargs)
 
     def leapify(self, *args, **kwargs):
         with tempfolder():

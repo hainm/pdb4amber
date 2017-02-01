@@ -1,7 +1,7 @@
 import warnings
 import parmed as pmd
 
-from .compat import StringIO
+from ..compat import StringIO
 
 warnings.filterwarnings("ignore")
 

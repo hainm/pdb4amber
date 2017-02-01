@@ -32,7 +32,7 @@ def test_write_model():
     with tempfolder():
         subprocess.check_call(['pdb4amber', '1l2y', '--pdbid', '-o', pdb_out])
         parm = pmd.load_file(pdb_out)
-        assert parm.get_coordinates().shape == (38, 304, 3)
+        assert parm.get_coordinates().shape == (1, 304, 3)
 
     # model 1
     with tempfolder():
@@ -52,6 +52,17 @@ def test_write_model():
         assert parm.get_coordinates().shape == (1, 304, 3)
         np.testing.assert_almost_equal(parm.coordinates,
                                        orig_parm.get_coordinates()[model-1])
+
+@unittest.skipUnless(internet_ok, 'must have internet connection to rcsb')
+def test_keep_all_model():
+    orig_parm = pmd.download_PDB('1l2y')
+    pdb_out = 'out.pdb'
+
+    # default
+    with tempfolder():
+        subprocess.check_call(['pdb4amber', '1l2y', '--pdbid', '-o', pdb_out, '--model', '-1'])
+        parm = pmd.load_file(pdb_out)
+        assert parm.get_coordinates().shape == (38, 304, 3)
 
 def test_dry():
     option = '--dry'

@@ -30,6 +30,8 @@ Country = travis
 EOF
 
 conda install ambertools=17 -c hainm/label/dev -y
+conda install ipywidgets -c conda-forge -y
+conda install nglview -c bioconda -y
 
 # pytest
 pip install pytest

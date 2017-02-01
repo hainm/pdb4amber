@@ -18,7 +18,7 @@ def _update_structure(fixer):
                    target='Widget',
                    args=[struct,])
 
-def wrap(func, fixer):
+def update_structure(func, fixer):
     @wraps(func)
     def me(*args, **kwargs):
         result = func(*args, **kwargs)
@@ -27,37 +27,55 @@ def wrap(func, fixer):
         return result
     return me
 
-class Viewer(AmberBuilder):
+class ViewerEditor(AmberBuilder):
+    ''' Fixing/Building/Editing/Visualizing in Jupyter notebook
+
+    Inheritance: AmberPDBFixer --> Leapify --> AmberBuilder --> ViewerEditor
+
+    Notes
+    -----
+    EXPERIMENTAL
+    '''
 
     def __init__(self, *args, **kwargs):
-        super(Viewer, self).__init__(*args, **kwargs)
+        super(ViewerEditor, self).__init__(*args, **kwargs)
         self._view = None
         # TODO: decorator?
         self.delay_update_structure = False
-        self.build_protein = wrap(super(Viewer, self).build_protein, fixer=self)
-        self.build_bdna = wrap(super(Viewer, self).build_bdna, fixer=self)
-        self.build_adna = wrap(super(Viewer, self).build_adna, fixer=self)
-        self.build_arna = wrap(super(Viewer, self).build_arna, fixer=self)
-        self.strip = wrap(super(Viewer, self).strip, fixer=self)
-        self.add_hydrogen = wrap(super(Viewer, self).add_hydrogen, fixer=self)
-        self.add_missing_atoms = wrap(super(Viewer, self).add_missing_atoms, fixer=self)
-        self.remove_water = wrap(super(Viewer, self).remove_water, fixer=self)
-        self.assign_histidine = wrap(super(Viewer, self).assign_histidine, fixer=self)
-        self.pack = wrap(self.pack, fixer=self)
-        self.mutate = wrap(self.mutate, fixer=self)
-        self.leapify = wrap(self.leapify, fixer=self)
+        self.build_protein = update_structure(super(ViewerEditor, self).build_protein, fixer=self)
+        self.build_bdna = update_structure(super(ViewerEditor, self).build_bdna, fixer=self)
+        self.build_adna = update_structure(super(ViewerEditor, self).build_adna, fixer=self)
+        self.build_arna = update_structure(super(ViewerEditor, self).build_arna, fixer=self)
+        self.build_unitcell = update_structure(super(ViewerEditor, self).build_unitcell, fixer=self)
+        self.strip = update_structure(super(ViewerEditor, self).strip, fixer=self)
+        self.add_hydrogen = update_structure(super(ViewerEditor, self).add_hydrogen, fixer=self)
+        self.add_missing_atoms = update_structure(super(ViewerEditor, self).add_missing_atoms, fixer=self)
+        self.remove_water = update_structure(super(ViewerEditor, self).remove_water, fixer=self)
+        self.assign_histidine = update_structure(super(ViewerEditor, self).assign_histidine, fixer=self)
+        self.pack = update_structure(self.pack, fixer=self)
+        self.mutate = update_structure(self.mutate, fixer=self)
+        self.leapify = update_structure(self.leapify, fixer=self)
 
     def visualize(self):
         if self.parm.coordinates.shape[0] == 0:
             self._view = nglview.NGLWidget()
         else:
-            self._view = super(Viewer, self).visualize()
+            self._view = super(ViewerEditor, self).visualize()
         return self._view
 
     def minimize(self, *args, **kwargs):
         def callback(xyz):
             self._view.coordinates_dict = {0: xyz}
-        return super(Viewer, self).minimize(*args, **kwargs, callback=callback)
+        return super(ViewerEditor, self).minimize(*args, callback=callback, **kwargs)
 
     def update_structure(self):
         _update_structure(self)
+
+    @property
+    def coordinates(self):
+        return self.parm.coordinates
+    
+    @coordinates.setter
+    def coordinates(self, values):
+        self.parm.coordinates = values
+        self._view.coordinates_dict = {0: self.parm.coordinates}

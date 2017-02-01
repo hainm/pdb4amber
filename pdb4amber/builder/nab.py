@@ -1,6 +1,5 @@
 import os
-import subprocess
-from ..utils import which
+from ..utils import which, easy_call
 
 def run(command):
     root = 'tmp_jamber'
@@ -20,12 +19,8 @@ def run(command):
             '-o',
             nabout
     ]
-    subprocess.check_output(build_command)
-    try:
-        subprocess.check_output(['./{}'.format(nabout)])
-    except subprocess.CalledProcessError as e:
-        print(e.stderr)
-        raise e
+    easy_call(build_command)
+    easy_call(['./{}'.format(nabout)])
     os.unlink(nabin)
     os.unlink(nabout)
     os.unlink(nabc)
