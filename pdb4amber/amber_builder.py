@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import parmed
 from .leapify import Leapify
 from .utils import tempfolder, which, easy_call
