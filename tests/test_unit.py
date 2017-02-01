@@ -151,3 +151,7 @@ def test_packmol():
     assert len([res.name for res in pdbfixer.parm.residues if res.name.startswith('HOH')]) == 0
     pdbfixer.pack(water, n_copies=100)
     assert len([res.name for res in pdbfixer.parm.residues if res.name.startswith('HOH')]) == 100
+
+def test_to_increase_coverage():
+    from pdb4amber.utils import amberbin
+    assert not amberbin('hello_there')

@@ -1,6 +1,7 @@
 import subprocess
 import parmed
 from .template import default_force_field, leap_template
+from .utils import easy_call
 
 
 def _make_leap_template(parm, ns_names, gaplist, sslist,
@@ -77,13 +78,9 @@ def run_tleap(parm, ns_names, gaplist, sslist, leap_input=None):
 
     # strangely tleap appends to the logfile so must delete first
     cmd = ['tleap', '-f', tleap_input_file]
+    output = easy_call(cmd).decode()
     try:
-        output = subprocess.check_output(cmd).decode()
-        try:
-            return parmed.load_file(prmtop, rst7)
-        except parmed.exceptions.FormatNotFound as e:
-            print(output)
-            raise e
-    except subprocess.CalledProcessError as e:
-        print(e.stdout)
+        return parmed.load_file(prmtop, rst7)
+    except parmed.exceptions.FormatNotFound as e:
+        print(output)
         raise e

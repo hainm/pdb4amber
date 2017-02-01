@@ -5,9 +5,9 @@ import tempfile
 from shutil import rmtree
 
 
-def easy_call(command):
+def easy_call(command, *args, **kwargs):
     try:
-        output = subprocess.check_output(command)
+        output = subprocess.check_output(command, *args, **kwargs)
         return output
     except subprocess.CalledProcessError as e:
         print(e.stderr)
