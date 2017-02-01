@@ -49,3 +49,15 @@ def test_build_unitcell():
     builder = AmberBuilder(pdb_fn)
     builder.build_unitcell()
     assert parm.coordinates.shape[0] * 4 == builder.parm.coordinates.shape[0]
+
+    with pytest.raises(ValueError):
+        parm2 = parm[:]
+        parm2.box = None
+        builder2 = AmberBuilder(parm2)
+        builder2.build_unitcell()
+
+    with pytest.raises(ValueError):
+        parm2 = parm[:]
+        parm2.symmetry = None
+        builder2 = AmberBuilder(parm2)
+        builder2.build_unitcell()

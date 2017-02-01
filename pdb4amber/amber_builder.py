@@ -44,6 +44,7 @@ class AmberBuilder(Leapify):
         UnitCell = which('UnitCell')
         if self.parm.box is None or self.parm.symmetry is None:
             raise ValueError("Must have symmetry and box data")
+        if not UnitCell:
             raise OSError("Can not find UnitCell program")
 
         with tempfolder():
