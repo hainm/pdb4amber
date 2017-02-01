@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 import os
-import subprocess
-from ..utils import which
+from ..utils import which, easy_call
 
 def run(command, verbose=False):
     fn = 'jamber_tmp.in'
@@ -10,7 +9,7 @@ def run(command, verbose=False):
     with open(fn, 'w') as fh:
         fh.write(command)
     build_command = '{} -f {}'.format(which('tleap'), fn).split()
-    output = subprocess.check_output(build_command).decode()
+    output = easy_call(build_command)
     os.unlink(fn)
     if verbose:
         print(output)

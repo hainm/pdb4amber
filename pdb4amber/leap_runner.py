@@ -78,7 +78,7 @@ def run_tleap(parm, ns_names, gaplist, sslist, leap_input=None):
 
     # strangely tleap appends to the logfile so must delete first
     cmd = ['tleap', '-f', tleap_input_file]
-    output = easy_call(cmd).decode()
+    output = easy_call(cmd)
     try:
         return parmed.load_file(prmtop, rst7)
     except parmed.exceptions.FormatNotFound as e:

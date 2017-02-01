@@ -8,7 +8,7 @@ from shutil import rmtree
 def easy_call(command, *args, **kwargs):
     try:
         output = subprocess.check_output(command, *args, stderr=subprocess.STDOUT, **kwargs)
-        return output
+        return output.decode()
     except subprocess.CalledProcessError as e:
         raise RuntimeError(e.output.decode())
 
