@@ -1,5 +1,6 @@
 import unittest
 import parmed as pmd
+import pytest
 from numpy.testing import assert_almost_equal as aa_eq
 from pdb4amber.amber_builder import AmberBuilder
 from pdb4amber.utils import tempfolder
