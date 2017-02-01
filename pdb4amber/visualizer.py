@@ -46,6 +46,7 @@ class ViewerEditor(AmberBuilder):
         self.build_bdna = update_structure(super(ViewerEditor, self).build_bdna, fixer=self)
         self.build_adna = update_structure(super(ViewerEditor, self).build_adna, fixer=self)
         self.build_arna = update_structure(super(ViewerEditor, self).build_arna, fixer=self)
+        self.build_unitcell = update_structure(super(ViewerEditor, self).build_unitcell, fixer=self)
         self.strip = update_structure(super(ViewerEditor, self).strip, fixer=self)
         self.add_hydrogen = update_structure(super(ViewerEditor, self).add_hydrogen, fixer=self)
         self.add_missing_atoms = update_structure(super(ViewerEditor, self).add_missing_atoms, fixer=self)
