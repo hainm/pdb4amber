@@ -62,3 +62,11 @@ def test_build_unitcell():
         parm2.symmetry = None
         builder2 = AmberBuilder(parm2)
         builder2.build_unitcell()
+
+def test_prob_pdb():
+    pdb_fn = get_fn('2igd/2igd.pdb')
+    parm = pmd.load_file(pdb_fn)
+    builder = AmberBuilder(pdb_fn)
+
+    builder.prop_pdb((1, 2, 2))
+    assert len(parm.atoms) * 4 == len(builder.parm.atoms)

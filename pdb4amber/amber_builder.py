@@ -52,8 +52,45 @@ class AmberBuilder(Leapify):
             out_pdb = 'out.pdb'
             self.parm.save(inp_pdb)
             out = easy_call([
-                'UnitCell',
+                UnitCell,
                 '-p', inp_pdb,
+                '-o', out_pdb,
+            ])
+            self.parm = parmed.load_file(out_pdb)
+
+    def prop_pdb(self, irep):
+        # TODO: change its name?
+        ''' Use PropPDB to propagate a PDB structure.
+        (EXPRERIMENTAL)
+        
+        Parameters
+        ----------
+        irep : Tuple[int]
+            number of replicas along x, y, z axis.
+
+        Requires
+        --------
+        PropPDB program (AmberTools)
+
+        Examples
+        --------
+        >>> builder.prop_pdb((0, 1, 3))
+        '''
+        PropPDB = which('PropPDB')
+        x, y, z = [str(i) for i in irep]
+        if not PropPDB:
+            raise OSError("Can not find UnitCell program")
+
+        with tempfolder():
+            inp_pdb = 'inp.pdb'
+            out_pdb = 'out.pdb'
+            self.parm.save(inp_pdb)
+            out = easy_call([
+                PropPDB,
+                '-p', inp_pdb,
+                '-ix', x,
+                '-iy', y,
+                '-iz', z,
                 '-o', out_pdb,
             ])
             self.parm = parmed.load_file(out_pdb)
