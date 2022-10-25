@@ -118,24 +118,24 @@ class AmberPDBFixer(object):
                     residue.name = 'HID'
                 else:
                     residue.name = 'HIE'
-                if residue.name == 'GLU':
-                    atom_name_set = sorted(
-                        set(atom.name for atom in residue.atoms
-                            if atom.atomic_number == 1))
-                    if 'HE2' in atom_name_set:
-                        residue.name = 'GLH'
-                if residue.name == 'ASP':
-                    atom_name_set = sorted(
-                        set(atom.name for atom in residue.atoms
-                            if atom.atomic_number == 1))
-                    if 'HD2' in atom_name_set:
-                        residue.name = 'ASH'
-                if residue.name == 'LYS':
-                    atom_name_set = sorted(
-                        set(atom.name for atom in residue.atoms
-                            if atom.atomic_number == 1))
-                    if 'HZ1' not in atom_name_set:
-                        residue.name = 'LYN'
+            if residue.name == 'GLU':
+                atom_name_set = sorted(
+                    set(atom.name for atom in residue.atoms
+                        if atom.atomic_number == 1))
+                if 'HE2' in atom_name_set:
+                    residue.name = 'GLH'
+            if residue.name == 'ASP':
+                atom_name_set = sorted(
+                    set(atom.name for atom in residue.atoms
+                        if atom.atomic_number == 1))
+                if 'HD2' in atom_name_set:
+                    residue.name = 'ASH'
+            if residue.name == 'LYS':
+                atom_name_set = sorted(
+                    set(atom.name for atom in residue.atoms
+                        if atom.atomic_number == 1))
+                if 'HZ1' not in atom_name_set:
+                    residue.name = 'LYN'
         return self
     
     
