@@ -23,11 +23,11 @@ else:
     string_types = basestring
 
 # TODO: include in ParmEd?
-from .residue import (RESPROT, AMBER_SUPPORTED_RESNAMES,
+from residue import (RESPROT, AMBER_SUPPORTED_RESNAMES,
                       HEAVY_ATOM_DICT,
                       )
 
-from .utils import tempfolder, amberbin
+from utils import tempfolder, amberbin
 
 __version__ = '1.3'
 
@@ -98,7 +98,7 @@ class AmberPDBFixer(object):
             self.parm = parmed.load_file(out_pdb)
         return self
 
-    def assign_protonationstates(self):
+    def assign_protonations(self):
         ''' Assign correct name for Histidine based on the atom name
     
         Returns
@@ -176,14 +176,44 @@ class AmberPDBFixer(object):
         parm : updated `parm`
         """
         for residue in self.parm.residues:
-            if residue.name == 'ASP':
+            if residue.name == 'ASP' or residue.name == 'ASH': #considering a previous protonation of the residues
                 residue.name = 'AS4'
-            elif residue.name == 'GLU':
+            elif residue.name == 'GLU' or residue.name == 'GLH':
                 residue.name = 'GL4'
             elif residue.name == 'HIS':
                 residue.name = 'HIP'
             else:
                 pass
+        return self
+
+    def constph_list(self, cpH_list_str):
+        """ Update AS4, GL4, HIP for constph.
+    
+        Returns
+        -------
+        parm : updated `parm`
+        """
+        if "," in cpH_list_str:
+            cpH_list = [int(i)-1 for i in cpH_list_str.split(",")]
+        elif "+" in cpH_list_str:
+            cpH_list = [int(i)-1 for i in cpH_list_str.split("+")]
+        else:
+            #assumin list only contains one value
+            cpH_list = int(cpH_list_str)
+        cpH_list.sort()
+        for residue in self.parm.residues:
+            if (residue.name == 'ASP' or residue.name == 'ASH') and residue.idx in cpH_list:
+                residue.name = 'AS4'
+            elif (residue.name == 'GLU' or residue.name == 'GLH') and residue.idx in cpH_list:
+                residue.name = 'GL4'
+            elif residue.name[:2] == 'HI' and residue.idx in cpH_list:
+                residue.name = 'HIP'
+            elif residue.idx > cpH_list[-1]:
+                break #That saves time for systems, that are already solvated.
+            else:
+                pass
+        self.parm.strip(':AS4@HD2')
+        self.parm.strip(':GL4@HE2')
         return self
     
     def find_gaps(self):
@@ -389,7 +419,8 @@ def run(arg_pdbout, arg_pdbin,
         arg_elbow=False,
         arg_logfile='pdb4amber.log',
         arg_keep_altlocs=False,
-        ):
+        arg_cpH_list=None,
+	):
 
     # always reset handlers to avoid duplication if run method is called more
     # than once
@@ -464,9 +495,12 @@ def run(arg_pdbout, arg_pdbin,
         pdbfixer.remove_water()
     # find histidines that might have to be changed:=====================
     if arg_constph:
-        pdbfixer.constph()
+        if arg_cpH_list is not None:
+            pdbfixer.constph_list(arg_cpH_list)
+        else:
+            pdbfixer.constph()
     else:
-        pdbfixer.assign_protonationstates()
+        pdbfixer.assign_protonations()
 
     # find possible S-S in the final protein:=============================
     sslist = pdbfixer.find_disulfide()
@@ -549,6 +583,8 @@ def main():
                         help="Model to use from a multi-model pdb file (integer).  (default: use all models)")
     parser.add_argument("-l", "--logfile", metavar="FILE", dest="logfile",
                         help="log filename", default='pdb4amber.log')
+    parser.add_argument("-c", "--constant_pH_list", dest="cpH_list",
+                        help="list of residuenumbers that should be considered in constant pH simulations")
     opt = parser.parse_args()
 
     # pdbin : {str, file object, parmed.Structure}
@@ -583,7 +619,8 @@ def main():
         arg_model=opt.model,
         arg_keep_altlocs=opt.keep_altlocs,
         arg_add_missing_atoms=opt.add_missing_atoms,
-        arg_logfile=logfile)
+        arg_logfile=logfile,
+	arg_cpH_list=opt.cpH_list)
 
 if __name__ == '__main__':
     main()
